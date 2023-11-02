@@ -68,7 +68,7 @@
   
 <script setup>
 import { signUpApi } from '../composables/loginSignup.js';
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 const { createAccount, signUser, togglePassword, hidePassword } = signUpApi();
 
 const handleFileChange = (event) => {
@@ -140,5 +140,7 @@ const hasErrors = computed(() => {
   ];
   return errorFields.some(error => error !== true);
 });
+
+
 </script>
   
