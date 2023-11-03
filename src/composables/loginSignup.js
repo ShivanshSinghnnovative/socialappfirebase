@@ -1,4 +1,5 @@
 import { reactive, ref } from "vue";
+import { storeToRefs } from 'pinia'
 import { userRegisterUse } from '../store/registerUser.js'
 
 export const signUpApi = () => {
@@ -16,7 +17,9 @@ export const signUpApi = () => {
         profilePhoto: null,
     });
     const store = userRegisterUse();
-    const { createUser, state } = store;
+    const { createUser  } = store;
+    const { existUserError } = storeToRefs(store)
+
     const createAccount = async () => {
         isLoading.value = true;
         await createUser({
@@ -27,7 +30,7 @@ export const signUpApi = () => {
             password: signUser.password,
             profilepic: signUser.profilePhoto
         });
-        if (!state.existUserError) {
+        if (!existUserError.value) {
             userExist.value = false;
             sucessModal.value = true;
             isLoading.value = false;
