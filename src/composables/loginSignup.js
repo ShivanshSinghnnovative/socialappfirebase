@@ -50,6 +50,9 @@ export const signUpApi = () => {
         signUser.confirmPassword = "";
         signUser.profilePhoto = null || "";
     };
+    const handleFileChange = (event) => {
+        signUser.profilePhoto = event.target.files[0];
+      };
     const togglePassword = () => {
         hidePassword.value = !hidePassword.value;
     };
@@ -60,7 +63,8 @@ export const signUpApi = () => {
         togglePassword,
         userExist,
         sucessModal,
-        isLoading
+        isLoading,
+        handleFileChange
     };
 }
 

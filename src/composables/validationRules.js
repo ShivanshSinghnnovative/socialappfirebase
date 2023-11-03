@@ -35,17 +35,13 @@ export const passwordRules = [
 ]
 
  export const confirmPasswordRules = (signUser) =>  {
-   
    return (value) => {
-    console.log(signUser.password)
       if (!value) return 'You must enter a password.'
       if (value.length >= 8 && signUser.password == value) return true
       if (signUser.password !== value) return "Confirm password should be the same as password"
       if (value !== signUser.password) return "Confirm password should be the same as password"
       return 'minimum 8  characters required'
-      
     }
-  
 }
 
 export const profileRules = [

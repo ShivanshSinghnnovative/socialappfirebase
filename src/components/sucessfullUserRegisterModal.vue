@@ -4,7 +4,7 @@
     <div class="bg-green-700 p-4 md:p-8 text-center w-2/5 mx-auto" @click.stop>
       <div class="border-2 border-black p-4 md:p-8 text-white text-lg md:text-2xl">
         <div class="text-3xl font-bold">
-          Successful user registration
+          <slot name="content"></slot>
         </div>
         <div>
           <button @click="closeModal"
