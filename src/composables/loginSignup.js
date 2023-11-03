@@ -15,6 +15,7 @@ export const signUpApi = () => {
     const store = userRegisterUse();
     const { createUser } = store;
     const createAccount = async () => {
+        sucessModal.value = true;
         await createUser({
             firstName: signUser.firstName,
             lastName: signUser.lastName,
@@ -31,7 +32,7 @@ export const signUpApi = () => {
         signUser,
         createAccount,
         hidePassword,
-        togglePassword,
+        togglePassword
     };
 }
 

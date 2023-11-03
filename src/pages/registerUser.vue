@@ -18,20 +18,18 @@
                     outlined></v-text-field>
                 </v-col>
                 <v-col cols="12">
-                  <v-text-field :rules="phoneRules" v-model="signUser.mobileNumber" label="Mobile Number"
-                    outlined></v-text-field>
+                  <v-text-field :rules="phoneRules" v-model="signUser.mobileNumber" label="Mobile Number" outlined>
+                  </v-text-field>
                 </v-col>
                 <v-col cols="12">
                   <v-text-field :rules="emailRules" v-model="signUser.email" label="Email" outlined></v-text-field>
                 </v-col>
-
                 <v-col cols="12">
                   <v-row class="mb-2">
                     <v-col cols="11">
                       <v-text-field :rules="passwordRules" v-model="signUser.password"
                         :type="hidePassword ? 'text' : 'password'" label="Password" outlined required>
                       </v-text-field>
-
                     </v-col>
                     <v-col cols="1" class=" mt-4">
                       <v-icon @click="togglePassword" :icon="hidePassword ? 'mdi-eye' : 'mdi-eye-off'">
@@ -39,22 +37,18 @@
                     </v-col>
                   </v-row>
                 </v-col>
-
                 <v-col cols="12">
                   <v-text-field :rules="confirmPasswordRules" v-model="signUser.confirmPassword" label="Confirm Password"
                     outlined type="password">
                   </v-text-field>
-
                 </v-col>
-
                 <v-col cols="12">
                   <v-file-input :rules="profileRules" label="Upload Profile Photo"
                     @change="handleFileChange"></v-file-input>
                 </v-col>
-
-                <v-col cols="12">
-                  <v-btn class="mt-2" type="submit" color="blue" dark :disabled="hasErrors">
-                    User Register
+                <v-col cols="2">
+                  <v-btn class="mt-2 pointer ml-10" color="blue" type="submit" dark :disabled="hasErrors">
+                    <sucessfullSignUp />
                   </v-btn>
                 </v-col>
               </v-row>
@@ -68,7 +62,8 @@
   
 <script setup>
 import { signUpApi } from '../composables/loginSignup.js';
-import { computed, onMounted } from 'vue';
+import { computed } from 'vue';
+import sucessfullSignUp from '../components/sucessfullUserRegisterModal.vue'
 const { createAccount, signUser, togglePassword, hidePassword } = signUpApi();
 
 const handleFileChange = (event) => {
