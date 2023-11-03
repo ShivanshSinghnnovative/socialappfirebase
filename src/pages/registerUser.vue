@@ -46,12 +46,24 @@
                   <v-file-input :rules="profileRules" label="Upload Profile Photo"
                     @change="handleFileChange"></v-file-input>
                 </v-col>
-                <v-col cols="2">
+                <v-col cols="12">
+                  <v-alert v-if="userExist" type="error" class="mt-2">
+                    User already exists. Please choose a different email.
+                  </v-alert>
+                </v-col>
+                <v-col cols="12">
                   <v-btn class="mt-2 pointer ml-10" color="blue" type="submit" dark :disabled="hasErrors">
-                    <sucessfullSignUp />
+                    <div v-if="!isLoading">
+                      User Register</div>
+                    <div v-else>
+                      <v-progress-circular indeterminate></v-progress-circular>
+                    </div>
                   </v-btn>
                 </v-col>
               </v-row>
+              <v-col v-if="sucessModal" cols="12">
+                <sucessfullSignUp />
+              </v-col>
             </v-form>
           </v-card-text>
         </v-card>
@@ -61,10 +73,12 @@
 </template>
   
 <script setup>
+import { computed, onMounted } from 'vue';
+
 import { signUpApi } from '../composables/loginSignup.js';
-import { computed } from 'vue';
 import sucessfullSignUp from '../components/sucessfullUserRegisterModal.vue'
-const { createAccount, signUser, togglePassword, hidePassword } = signUpApi();
+
+const { createAccount, signUser, togglePassword, hidePassword, sucessModal, userExist, isLoading } = signUpApi();
 
 const handleFileChange = (event) => {
   const file = event.target.files[0];

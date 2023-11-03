@@ -3,10 +3,14 @@ import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
 import { collection, addDoc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes } from "firebase/storage";
 import { app, db } from '../firebase.js';
+import { reactive } from 'vue';
 const auth = getAuth(app);
 const storage = getStorage();
-
 export const userRegisterUse = defineStore('userRegister', () => {
+    const state = reactive({
+        existUserError: false
+    })
+
     const createUser = async (userData) => {
         try {
             const authResult = await createUserWithEmailAndPassword(auth, userData.email, userData.password);
@@ -19,11 +23,13 @@ export const userRegisterUse = defineStore('userRegister', () => {
             })
             const storageRef = ref(storage, `userProfile/${authResult.user.uid}/profilepic`);
             uploadBytes(storageRef, userData.profilePhoto);
-            console.log(authResult, storedata , userData.profilePhoto)
+            state.existUserError = false;
+            console.log(authResult, storedata, userData.profilePhoto)
         } catch (error) {
-            console.log(error );
+            console.log(error);
+            state.existUserError = true;
         }
     };
 
-    return { createUser };
+    return { createUser, state };
 });
