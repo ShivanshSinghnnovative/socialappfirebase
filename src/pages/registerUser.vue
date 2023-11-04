@@ -64,9 +64,7 @@
                 </v-col>
               </v-row>
               <v-col v-if="sucessModal" cols="12">
-                <sucessfullSignUp>
-                  <template v-slot:content>You have successfully registered</template>
-                </sucessfullSignUp>
+                <sucessfullSignUp  :content="'You have successfully registered'"/>
               </v-col>
             </v-form>
           </v-card-text>
@@ -79,7 +77,7 @@
 <script setup>
 import { computed, onMounted } from 'vue';
 import { signUpApi } from '../composables/loginSignup.js';
-import sucessfullSignUp from '../components/sucessfullUserRegisterModal.vue'
+import sucessfullSignUp from '../components/sucessfullModal.vue'
 import { confirmPasswordRules, requiredField, nameRules, phoneRules, emailRules, passwordRules, profileRules } from "../composables/validationRules"
 
 const { createAccount, signUser, togglePassword, hidePassword, sucessModal, userExist, isLoading, handleFileChange } = signUpApi();

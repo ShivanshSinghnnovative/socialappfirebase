@@ -4,7 +4,7 @@
     <div class="bg-green-700 p-4 md:p-8 text-center w-2/5 mx-auto" @click.stop>
       <div class="border-2 border-black p-4 md:p-8 text-white text-lg md:text-2xl">
         <div class="text-3xl font-bold">
-          <slot name="content"></slot>
+          {{content}}
         </div>
         <div>
           <button @click="closeModal"
@@ -18,7 +18,8 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref , defineProps } from 'vue'
+const { content } = defineProps(['content']);
 const sucessFullModal = ref(true);
 const closeModal = () => {
   sucessFullModal.value = false;
