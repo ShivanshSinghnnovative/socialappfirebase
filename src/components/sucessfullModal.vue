@@ -18,10 +18,13 @@
 </template>
 
 <script setup>
+import { useRouter} from 'vue-router'
 import { ref , defineProps } from 'vue'
+const router = useRouter();
 const { content } = defineProps(['content']);
 const sucessFullModal = ref(true);
 const closeModal = () => {
   sucessFullModal.value = false;
+  router.push('/posts')
 };
 </script>

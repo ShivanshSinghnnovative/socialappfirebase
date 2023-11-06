@@ -62,12 +62,19 @@
                     </div>
                   </v-btn>
                 </v-col>
+                <v-col>
+                  <div class="text-center text-green-900 m-auto">Are you a Alredy a register User ?</div>
+                  <v-btn class="mt-2 pointer m-auto ml-12" color="blue" @click="gotoLogin">
+                    Login
+                  </v-btn>
+                </v-col>
               </v-row>
               <v-col v-if="sucessModal" cols="12">
-                <sucessfullSignUp  :content="'You have successfully registered'"/>
+                <sucessfullSignUp :content="'You have successfully registered'" />
               </v-col>
             </v-form>
           </v-card-text>
+
         </v-card>
       </v-col>
     </v-row>
@@ -80,7 +87,7 @@ import { signUpApi } from '../composables/loginSignup.js';
 import sucessfullSignUp from '../components/sucessfullModal.vue'
 import { confirmPasswordRules, requiredField, nameRules, phoneRules, emailRules, passwordRules, profileRules } from "../composables/validationRules"
 
-const { createAccount, signUser, togglePassword, hidePassword, sucessModal, userExist, isLoading, handleFileChange } = signUpApi();
+const { createAccount, signUser, togglePassword, hidePassword, sucessModal, userExist, isLoading, handleFileChange, gotoLogin } = signUpApi();
 
 const confirm = [
   confirmPasswordRules(signUser),

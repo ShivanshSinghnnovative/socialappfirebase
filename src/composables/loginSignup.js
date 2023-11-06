@@ -1,8 +1,10 @@
 import { reactive, ref } from "vue";
 import { storeToRefs } from 'pinia'
-import { userRegisterUse } from '../store/registerUser.js'
+import { userRegisterUse, signInUser } from '../store/authUser.js'
+import { useRouter } from 'vue-router';
 
 export const signUpApi = () => {
+    const router = useRouter();
     const hidePassword = ref(false);
     const sucessModal = ref(false);
     const userExist = ref(false);
@@ -17,7 +19,7 @@ export const signUpApi = () => {
         profilePhoto: null,
     });
     const store = userRegisterUse();
-    const { createUser  } = store;
+    const { createUser } = store;
     const { existUserError } = storeToRefs(store)
 
     const createAccount = async () => {
@@ -52,9 +54,12 @@ export const signUpApi = () => {
     };
     const handleFileChange = (event) => {
         signUser.profilePhoto = event.target.files[0];
-      };
+    };
     const togglePassword = () => {
         hidePassword.value = !hidePassword.value;
+    };
+    const gotoLogin = () => {
+        router.push({ path: '/' })
     };
     return {
         signUser,
@@ -64,7 +69,55 @@ export const signUpApi = () => {
         userExist,
         sucessModal,
         isLoading,
-        handleFileChange
+        handleFileChange,
+        gotoLogin
     };
 }
 
+export const loginApi = () => {
+    const router = useRouter();
+    const hidePassword = ref(false);
+    const invalidUser = ref(false);
+    const sucessModal = ref(false);
+    const isLoading = ref(false);
+    const loginUser = reactive({
+        email: "",
+        password: ""
+    });
+    const store = signInUser();
+    const { loginRegisterUser } = store;
+    const { invalidMailError } = storeToRefs(store)
+    const signInRegisterUser = async () => {
+        isLoading.value = true;
+        await loginRegisterUser({
+            email: loginUser.email,
+            password: loginUser.password
+        });
+        if (!invalidMailError.value) {
+            invalidUser.value = false;
+            isLoading.value = false;
+            router.push({ path: '/posts' })
+        }
+        else {
+            invalidUser.value = true;
+            isLoading.value = false;
+        }
+    }
+    const togglePassword = () => {
+        hidePassword.value = !hidePassword.value;
+    };
+    const gotoSignUp = () => {
+        router.push({ path: '/register' })
+    };
+    return {
+        hidePassword,
+        togglePassword,
+        sucessModal,
+        isLoading,
+        loginUser,
+        invalidUser,
+        signInRegisterUser,
+        gotoSignUp,
+        sucessModal
+    }
+}
