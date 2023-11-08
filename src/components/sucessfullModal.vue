@@ -1,13 +1,13 @@
 <template>
   <div v-if="sucessFullModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
-    @click="closeModal">
+  @click="closeModals , $emit('closeModals')">
     <div class="bg-green-700 p-4 md:p-8 text-center w-2/5 mx-auto" @click.stop>
       <div class="border-2 border-black p-4 md:p-8 text-white text-lg md:text-2xl">
         <div class="text-3xl font-bold">
           {{content}}
         </div>
         <div>
-          <button @click="closeModal"
+          <button @click="$emit('closeModals')"
             class="mt-4 text-lg md:text-xl px-4 py-2 rounded bg-white text-black cursor-pointer">
             OK
           </button>
@@ -18,13 +18,11 @@
 </template>
 
 <script setup>
-import { useRouter} from 'vue-router'
-import { ref , defineProps } from 'vue'
-const router = useRouter();
+import {defineEmits , ref , defineProps } from 'vue'
 const { content } = defineProps(['content']);
+defineEmits(['closeModals']);
 const sucessFullModal = ref(true);
 const closeModal = () => {
   sucessFullModal.value = false;
-  router.push('/posts')
 };
 </script>

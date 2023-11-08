@@ -1,6 +1,6 @@
 import { reactive, ref } from "vue";
 import { storeToRefs } from 'pinia'
-import { useAuth } from '../store/authUser.js'
+import { useAuthUserStore } from '../store/auth-user-store.js'
 import { useRouter } from 'vue-router';
 
 export const signUpApi = () => {
@@ -18,7 +18,7 @@ export const signUpApi = () => {
         confirmPassword: "",
         profilePhoto: null,
     });
-    const store = useAuth();
+    const store = useAuthUserStore();
     const { createUser } = store;
     const { existUserError } = storeToRefs(store)
 
@@ -74,18 +74,17 @@ export const loginApi = () => {
     const router = useRouter();
     const hidePassword = ref(false);
     const invalidUser = ref(false);
-    const sucessModal = ref(false);
     const isLoading = ref(false);
     const loginUser = reactive({
         email: "",
         password: ""
     });
-    const store = useAuth();
-    const { loginRegisterUser } = store;
+    const store = useAuthUserStore();
+    const { signInUser } = store;
     const { invalidMailError } = storeToRefs(store)
     const signInRegisterUser = async () => {
         isLoading.value = true;
-        await loginRegisterUser({
+        await signInUser({
             email: loginUser.email,
             password: loginUser.password
         });
@@ -105,11 +104,10 @@ export const loginApi = () => {
     return {
         hidePassword,
         togglePassword,
-        sucessModal,
         isLoading,
         loginUser,
         invalidUser,
         signInRegisterUser,
-        sucessModal
+
     }
 }

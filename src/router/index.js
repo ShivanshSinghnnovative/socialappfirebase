@@ -1,23 +1,42 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
-import { useAuth } from '../store/authUser.js'; 
-import { storeToRefs } from 'pinia'
 
+const userIsLoggedIn = () => {
+  return localStorage.getItem('UID') !== null;
+}
+
+const afterSuccessfulLoginsignup = (to, from, next) => {
+  if (userIsLoggedIn()) {
+    next('/posts');
+  } else {
+    next();
+  }
+};
+const commonBeforeEnter = (to, from, next) => {
+  if (userIsLoggedIn()) {
+    next();
+  } else {
+    next('/');
+  }
+};
 const routes = [
   {
     path: '/register',
     name: 'register',
     component: () => import('@/pages/registerUser.vue'),
+    beforeEnter: afterSuccessfulLoginsignup,
   },
   {
     path: '/',
     name: 'login',
     component: () => import('@/pages/userLogin.vue'),
+    beforeEnter: afterSuccessfulLoginsignup,
   },
   {
     path: '/posts',
     name: 'posts',
     component: () => import('@/pages/showPost.vue'),
-    
+    beforeEnter: commonBeforeEnter
+
   },
 ]
 const router = createRouter({
@@ -25,4 +44,14 @@ const router = createRouter({
   routes
 })
 
+
+
+router.beforeEach((to, from, next) => {
+  const isLoggedOut = (to.name !== 'login' && to.name !== 'register' && !userIsLoggedIn());
+  if (isLoggedOut) {
+    next({ name: 'login' });
+  } else {
+    next();
+  }
+});
 export default router;

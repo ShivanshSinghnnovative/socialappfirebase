@@ -33,10 +33,10 @@
 <script setup>
 import { ref } from 'vue';
 import { storeToRefs } from 'pinia';
-import { useAuth } from '../store/authUser.js';
+import { useAuthUserStore } from '../store/auth-user-store.js';
 const drawer = ref(true);
 const rail = ref(true);
-const store = useAuth();
+const store = useAuthUserStore();
 const { userDetails } = storeToRefs(store);
 </script>
   

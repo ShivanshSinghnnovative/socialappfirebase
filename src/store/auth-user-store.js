@@ -10,13 +10,12 @@ import { useRouter } from 'vue-router';
 const auth = getAuth(app);
 const storage = getStorage();
 
-export const useAuth = defineStore('useAuth', () => {
+export const useAuthUserStore = defineStore('useAuth', () => {
     const state = reactive({
         userLoggedIn: false,
         userDetails: null,
         invalidMailError: false,
         existUserError: false,
-        sucessFullModal: false,
     })
     const getUserDetails = async (uid) => {
         try {
@@ -41,10 +40,8 @@ export const useAuth = defineStore('useAuth', () => {
         if (user) {
             const userDetails = await getUserDetails(user.uid);
             state.userDetails = userDetails;
-            state.sucessFullModal = true;
         } else {
             state.userDetails = null;
-            state.sucessFullModal = false;
         }
     });
 
@@ -66,19 +63,19 @@ export const useAuth = defineStore('useAuth', () => {
             state.existUserError = false;
             if (storedata) {
                 state.userDetails = payload
-
             }
+            localStorage.setItem('UID', JSON.stringify(payload.uid));
         } catch (error) {
             console.log(error);
             state.existUserError = true;
         }
     };
 
-    const loginRegisterUser = async (loginUserDetails) => {
+    const signInUser = async (loginUserDetails) => {
         try {
             const result = await signInWithEmailAndPassword(auth, loginUserDetails.email, loginUserDetails.password);
             state.invalidMailError = false;
-            console.log("Sign-in result:", result);
+            localStorage.setItem('UID', JSON.stringify(loginUserDetails.uid));
         } catch (error) {
             console.error("Sign-in error:", error);
             state.invalidMailError = true;
@@ -91,11 +88,12 @@ export const useAuth = defineStore('useAuth', () => {
             signOut(auth).then(() => {
                 router.push('/')
             })
+            localStorage.removeItem('UID')
         } catch (error) {
             console.log(error)
         }
     }
     const userDetails = computed(() => state.userDetails);
     const userLoggedIn = computed(() => state.userLoggedIn);
-    return { createUser, userDetails, userLoggedIn, logout, loginRegisterUser, ...toRefs(state) };
+    return { createUser, userDetails, userLoggedIn, logout, signInUser, ...toRefs(state) };
 });

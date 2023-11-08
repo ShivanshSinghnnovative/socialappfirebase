@@ -71,12 +71,11 @@
                   </div>
                 </v-col>
               </v-row>
-              <v-col v-if="sucessFullModal" cols="12">
-                <sucessfullSignUp :content="'You have successfully registered'" />
-              </v-col>
             </v-form>
           </v-card-text>
-
+          <v-col v-if="sucessModal" cols="12">
+            <sucessfullSignUp :content="'You have successfully registered'" @closeModals="handleCloseModal" />
+          </v-col>
         </v-card>
       </v-col>
     </v-row>
@@ -86,18 +85,19 @@
 <script setup>
 import { computed, onMounted } from 'vue';
 import { signUpApi } from '../composables/loginSignup.js';
-import { storeToRefs } from 'pinia';
+import { useRouter} from 'vue-router'
 import sucessfullSignUp from '../components/sucessfullModal.vue'
 import { confirmPasswordRules, requiredField, nameRules, phoneRules, emailRules, passwordRules, profileRules } from "../composables/validationRules"
-import { useAuth } from '@/store/authUser';
 const { createAccount, signUser, togglePassword, hidePassword, sucessModal, userExist, isLoading, handleFileChange } = signUpApi();
-const store = useAuth();
-
-const { sucessFullModal } = storeToRefs(store);
-
+const router = useRouter();
 const confirm = [
   confirmPasswordRules(signUser),
 ]
+const handleCloseModal = () => {
+  router.push('/posts');
+  console.log("Successfully registered");
+};
+
 const hasErrors = computed(() => {
   const errorFields = [
     ...nameRules.map(rule => rule(signUser.firstName)),
