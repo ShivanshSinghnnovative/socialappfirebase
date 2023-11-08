@@ -85,7 +85,7 @@
 <script setup>
 import { computed, onMounted } from 'vue';
 import { signUpApi } from '../composables/loginSignup.js';
-import { useRouter} from 'vue-router'
+import { useRouter } from 'vue-router'
 import sucessfullSignUp from '../components/sucessfullModal.vue'
 import { confirmPasswordRules, requiredField, nameRules, phoneRules, emailRules, passwordRules, profileRules } from "../composables/validationRules"
 const { createAccount, signUser, togglePassword, hidePassword, sucessModal, userExist, isLoading, handleFileChange } = signUpApi();
@@ -95,7 +95,6 @@ const confirm = [
 ]
 const handleCloseModal = () => {
   router.push('/posts');
-  console.log("Successfully registered");
 };
 
 const hasErrors = computed(() => {

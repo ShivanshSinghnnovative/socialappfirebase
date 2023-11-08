@@ -18,11 +18,11 @@
         </v-list>
 
         <v-divider></v-divider>
-
         <v-list density="compact" nav>
-          <v-list-item prepend-icon="mdi-home-city" title="Home" value="home"></v-list-item>
-          <v-list-item prepend-icon="mdi-account" title="My Account" value="account"></v-list-item>
-          <v-list-item prepend-icon="mdi-account-group-outline" title="Users" value="users"></v-list-item>
+          <div v-for="item in navTitleArr" :key="item.id">
+            <v-list-item :prepend-icon="item.icon" :title="item.title" value="home">
+            </v-list-item>
+          </div>
         </v-list>
       </v-navigation-drawer>
       <v-main style="height: 250px"></v-main>
@@ -34,6 +34,7 @@
 import { ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useAuthUserStore } from '../store/auth-user-store.js';
+import { navTitleArr } from '../navBarTitles/config.js'
 const drawer = ref(true);
 const rail = ref(true);
 const store = useAuthUserStore();

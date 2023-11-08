@@ -1,10 +1,10 @@
 <template>
   <div v-if="sucessFullModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
-  @click="closeModals , $emit('closeModals')">
+    @click="closeModal, $emit('closeModals')">
     <div class="bg-green-700 p-4 md:p-8 text-center w-2/5 mx-auto" @click.stop>
       <div class="border-2 border-black p-4 md:p-8 text-white text-lg md:text-2xl">
         <div class="text-3xl font-bold">
-          {{content}}
+          {{ content }}
         </div>
         <div>
           <button @click="$emit('closeModals')"
@@ -18,7 +18,7 @@
 </template>
 
 <script setup>
-import {defineEmits , ref , defineProps } from 'vue'
+import { defineEmits, ref, defineProps } from 'vue'
 const { content } = defineProps(['content']);
 defineEmits(['closeModals']);
 const sucessFullModal = ref(true);
