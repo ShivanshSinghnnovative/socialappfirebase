@@ -7,9 +7,9 @@
     </div>
 </template>
 <script setup>
-import { signoutUser } from '../store/authUser.js';
+import { useAuth } from '../store/authUser.js';
 
-const store = signoutUser();
+const store = useAuth();
 const { logout } = store;
 
 </script>

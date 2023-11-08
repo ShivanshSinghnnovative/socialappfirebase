@@ -1,5 +1,5 @@
 <template>
-  <div v-if="userLoggedIn" >
+  <div v-if="userLoggedIn">
     <navBar />
   </div>
 
@@ -8,11 +8,10 @@
 
 <script setup>
 import navBar from './components/navBar.vue'
-import { useAuth } from './store/authUser.js'; 
+import { useAuth } from './store/authUser.js';
 import { storeToRefs } from 'pinia'
 
 const store = useAuth();
-
 const { userLoggedIn } = storeToRefs(store)
 
 </script>

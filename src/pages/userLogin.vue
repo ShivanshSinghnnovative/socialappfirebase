@@ -43,10 +43,14 @@
                                         <v-progress-circular indeterminate></v-progress-circular>
                                     </div>
                                 </v-btn>
-                                <v-btn class="mt-2 pointer m-auto ml-2" color="blue" @click="gotoSignUp">
-                                    SignUp
-                                </v-btn>
                             </v-col>
+                            <v-col class="m-auto">
+                                <div class="text-center text-green-900 m-auto">
+                                  <div> Need an account ? </div>
+                                <router-link to="/register" class="mt-2 pointer text-center" style="display: inline-block; color: blue;">
+                                  SignUp
+                                </router-link></div>
+                              </v-col>
                         </v-form>
                     </v-card-text>
                 </v-card>
@@ -59,7 +63,7 @@
 import { computed } from 'vue';
 import { loginApi } from '../composables/loginSignup.js';
 import { requiredField } from "../composables/validationRules"
-const { loginUser, togglePassword, hidePassword, sucessModal , gotoSignUp  ,signInRegisterUser , isLoading  , invalidUser} = loginApi();
+const { loginUser, togglePassword, hidePassword, sucessModal  ,signInRegisterUser , isLoading  , invalidUser} = loginApi();
 
 const hasErrors = computed(() => {
   const errorFields = [

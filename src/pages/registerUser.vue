@@ -46,7 +46,7 @@
                 </v-col>
                 <v-col cols="12">
                   <v-file-input :rules="[requiredField, profileRules].flat()" label="Upload Profile Photo"
-                    @change="handleFileChange"></v-file-input>
+                    accept="image/*" @change="handleFileChange"></v-file-input>
                 </v-col>
                 <v-col cols="12">
                   <v-alert v-if="userExist" type="error" class="mt-2">
@@ -62,14 +62,16 @@
                     </div>
                   </v-btn>
                 </v-col>
-                <v-col>
-                  <div class="text-center text-green-900 m-auto">Are you a Alredy a register User ?</div>
-                  <v-btn class="mt-2 pointer m-auto ml-12" color="blue" @click="gotoLogin">
-                    Login
-                  </v-btn>
+                <v-col class="m-auto">
+                  <div class="text-center text-green-900 m-auto">
+                    <div> Are you already a registered user? </div>
+                    <router-link to="/" class="mt-2 pointer text-center" style="display: inline-block; color: blue;">
+                      Login
+                    </router-link>
+                  </div>
                 </v-col>
               </v-row>
-              <v-col v-if="sucessModal" cols="12">
+              <v-col v-if="sucessFullModal" cols="12">
                 <sucessfullSignUp :content="'You have successfully registered'" />
               </v-col>
             </v-form>
@@ -84,10 +86,14 @@
 <script setup>
 import { computed, onMounted } from 'vue';
 import { signUpApi } from '../composables/loginSignup.js';
+import { storeToRefs } from 'pinia';
 import sucessfullSignUp from '../components/sucessfullModal.vue'
 import { confirmPasswordRules, requiredField, nameRules, phoneRules, emailRules, passwordRules, profileRules } from "../composables/validationRules"
+import { useAuth } from '@/store/authUser';
+const { createAccount, signUser, togglePassword, hidePassword, sucessModal, userExist, isLoading, handleFileChange } = signUpApi();
+const store = useAuth();
 
-const { createAccount, signUser, togglePassword, hidePassword, sucessModal, userExist, isLoading, handleFileChange, gotoLogin } = signUpApi();
+const { sucessFullModal } = storeToRefs(store);
 
 const confirm = [
   confirmPasswordRules(signUser),

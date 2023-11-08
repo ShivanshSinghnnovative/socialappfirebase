@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
-import { collection, addDoc , getDocs , doc } from "firebase/firestore";
+import { collection, addDoc, getDocs, doc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { app, db } from '../firebase.js';
 import { reactive, toRefs } from 'vue';
@@ -10,31 +10,19 @@ import { useRouter } from 'vue-router';
 const auth = getAuth(app);
 const storage = getStorage();
 
-export const signoutUser = () => {
-const router = useRouter();
-    const logout = async () => {
-        try {
-            signOut(auth).then(() => {
-                console.log("logout ");
-                router.push('/')
-            })
-        } catch (error) {
-            console.log(error)
-        }
-    }
-    return { logout }
-}
-
 export const useAuth = defineStore('useAuth', () => {
     const state = reactive({
         userLoggedIn: false,
         userDetails: null,
+        invalidMailError: false,
+        existUserError: false,
+        sucessFullModal: false,
     })
     const getUserDetails = async (uid) => {
         try {
             const userDoc = await getDocs(collection(db, "userDetails"));
             let userDetails = null;
-    
+
             userDoc.forEach((doc) => {
                 const data = doc.data();
                 if (data.uid === uid) {
@@ -47,27 +35,18 @@ export const useAuth = defineStore('useAuth', () => {
             return null;
         }
     };
-    
+
     onAuthStateChanged(auth, async (user) => {
         state.userLoggedIn = !!user;
-        console.log('User logged in:', state.userLoggedIn);
         if (user) {
             const userDetails = await getUserDetails(user.uid);
             state.userDetails = userDetails;
-            console.log('User details jfjfjfjf:', state.userDetails);
+            state.sucessFullModal = true;
         } else {
             state.userDetails = null;
+            state.sucessFullModal = false;
         }
     });
-    const userDetails = computed(() => state.userDetails);
-    const userLoggedIn = computed(() => state.userLoggedIn);
-    return { userLoggedIn , userDetails };
-});
-
-export const userRegisterUse = defineStore('userRegister', () => {
-    const state = reactive({
-        existUserError: false
-    })
 
     const createUser = async (userData) => {
         try {
@@ -75,29 +54,25 @@ export const userRegisterUse = defineStore('userRegister', () => {
             const storageRef = ref(storage, `userProfile/${authResult.user.uid}/profilepic`);
             await uploadBytes(storageRef, userData.profilepic);
             const downloadURL = await getDownloadURL(storageRef);
-
-            const storedata = await addDoc(collection(db, "userDetails"), {
+            const payload = {
                 uid: authResult.user.uid,
                 firstName: userData.firstName,
                 lastName: userData.lastName,
                 mobileNumber: userData.mobileNumber,
                 email: userData.email,
                 profilePhotoPath: downloadURL
-            })
+            }
+            const storedata = await addDoc(collection(db, "userDetails"), payload)
             state.existUserError = false;
+            if (storedata) {
+                state.userDetails = payload
+
+            }
         } catch (error) {
             console.log(error);
             state.existUserError = true;
         }
     };
-
-    return { createUser, ...toRefs(state) };
-});
-
-export const signInUser = defineStore('userLogin', () => {
-    const state = reactive({
-        invalidMailError: false,
-    })
 
     const loginRegisterUser = async (loginUserDetails) => {
         try {
@@ -110,6 +85,17 @@ export const signInUser = defineStore('userLogin', () => {
         }
     };
 
-    return { loginRegisterUser, ...toRefs(state) };
-
+    const router = useRouter();
+    const logout = async () => {
+        try {
+            signOut(auth).then(() => {
+                router.push('/')
+            })
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    const userDetails = computed(() => state.userDetails);
+    const userLoggedIn = computed(() => state.userLoggedIn);
+    return { createUser, userDetails, userLoggedIn, logout, loginRegisterUser, ...toRefs(state) };
 });

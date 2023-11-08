@@ -1,6 +1,6 @@
 import { reactive, ref } from "vue";
 import { storeToRefs } from 'pinia'
-import { userRegisterUse, signInUser } from '../store/authUser.js'
+import { useAuth } from '../store/authUser.js'
 import { useRouter } from 'vue-router';
 
 export const signUpApi = () => {
@@ -18,7 +18,7 @@ export const signUpApi = () => {
         confirmPassword: "",
         profilePhoto: null,
     });
-    const store = userRegisterUse();
+    const store = useAuth();
     const { createUser } = store;
     const { existUserError } = storeToRefs(store)
 
@@ -58,9 +58,6 @@ export const signUpApi = () => {
     const togglePassword = () => {
         hidePassword.value = !hidePassword.value;
     };
-    const gotoLogin = () => {
-        router.push({ path: '/' })
-    };
     return {
         signUser,
         createAccount,
@@ -70,7 +67,6 @@ export const signUpApi = () => {
         sucessModal,
         isLoading,
         handleFileChange,
-        gotoLogin
     };
 }
 
@@ -84,7 +80,7 @@ export const loginApi = () => {
         email: "",
         password: ""
     });
-    const store = signInUser();
+    const store = useAuth();
     const { loginRegisterUser } = store;
     const { invalidMailError } = storeToRefs(store)
     const signInRegisterUser = async () => {
@@ -106,9 +102,6 @@ export const loginApi = () => {
     const togglePassword = () => {
         hidePassword.value = !hidePassword.value;
     };
-    const gotoSignUp = () => {
-        router.push({ path: '/register' })
-    };
     return {
         hidePassword,
         togglePassword,
@@ -117,7 +110,6 @@ export const loginApi = () => {
         loginUser,
         invalidUser,
         signInRegisterUser,
-        gotoSignUp,
         sucessModal
     }
 }
