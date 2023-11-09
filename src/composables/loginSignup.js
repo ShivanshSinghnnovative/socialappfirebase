@@ -1,8 +1,10 @@
 import { reactive, ref } from "vue";
 import { storeToRefs } from 'pinia'
-import { userRegisterUse } from '../store/registerUser.js'
+import { useAuthUserStore } from '../store/auth-user-store.js'
+import { useRouter } from 'vue-router';
 
 export const signUpApi = () => {
+    const router = useRouter();
     const hidePassword = ref(false);
     const sucessModal = ref(false);
     const userExist = ref(false);
@@ -16,8 +18,8 @@ export const signUpApi = () => {
         confirmPassword: "",
         profilePhoto: null,
     });
-    const store = userRegisterUse();
-    const { createUser  } = store;
+    const store = useAuthUserStore();
+    const { createUser } = store;
     const { existUserError } = storeToRefs(store)
 
     const createAccount = async () => {
@@ -52,7 +54,7 @@ export const signUpApi = () => {
     };
     const handleFileChange = (event) => {
         signUser.profilePhoto = event.target.files[0];
-      };
+    };
     const togglePassword = () => {
         hidePassword.value = !hidePassword.value;
     };
@@ -64,7 +66,48 @@ export const signUpApi = () => {
         userExist,
         sucessModal,
         isLoading,
-        handleFileChange
+        handleFileChange,
     };
 }
 
+export const loginApi = () => {
+    const router = useRouter();
+    const hidePassword = ref(false);
+    const invalidUser = ref(false);
+    const isLoading = ref(false);
+    const loginUser = reactive({
+        email: "",
+        password: ""
+    });
+    const store = useAuthUserStore();
+    const { signInUser } = store;
+    const { invalidMailError } = storeToRefs(store)
+    const signInRegisterUser = async () => {
+        isLoading.value = true;
+        await signInUser({
+            email: loginUser.email,
+            password: loginUser.password
+        });
+        if (!invalidMailError.value) {
+            invalidUser.value = false;
+            isLoading.value = false;
+            router.push({ path: '/posts' })
+        }
+        else {
+            invalidUser.value = true;
+            isLoading.value = false;
+        }
+    }
+    const togglePassword = () => {
+        hidePassword.value = !hidePassword.value;
+    };
+    return {
+        hidePassword,
+        togglePassword,
+        isLoading,
+        loginUser,
+        invalidUser,
+        signInRegisterUser,
+
+    }
+}

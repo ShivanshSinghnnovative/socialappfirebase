@@ -46,7 +46,7 @@
                 </v-col>
                 <v-col cols="12">
                   <v-file-input :rules="[requiredField, profileRules].flat()" label="Upload Profile Photo"
-                    @change="handleFileChange"></v-file-input>
+                    accept="image/*" @change="handleFileChange"></v-file-input>
                 </v-col>
                 <v-col cols="12">
                   <v-alert v-if="userExist" type="error" class="mt-2">
@@ -62,12 +62,20 @@
                     </div>
                   </v-btn>
                 </v-col>
+                <v-col class="m-auto">
+                  <div class="text-center text-green-900 m-auto">
+                    <div> Are you already a registered user? </div>
+                    <router-link to="/" class="mt-2 pointer text-center" style="display: inline-block; color: blue;">
+                      Login
+                    </router-link>
+                  </div>
+                </v-col>
               </v-row>
-              <v-col v-if="sucessModal" cols="12">
-                <sucessfullSignUp  :content="'You have successfully registered'"/>
-              </v-col>
             </v-form>
           </v-card-text>
+          <v-col v-if="sucessModal" cols="12">
+            <sucessfullSignUp :content="'You have successfully registered'" @closeModals="handleCloseModal" />
+          </v-col>
         </v-card>
       </v-col>
     </v-row>
@@ -77,14 +85,19 @@
 <script setup>
 import { computed, onMounted } from 'vue';
 import { signUpApi } from '../composables/loginSignup.js';
+import { useRouter } from 'vue-router'
 import sucessfullSignUp from '../components/sucessfullModal.vue'
 import { confirmPasswordRules, requiredField, nameRules, phoneRules, emailRules, passwordRules, profileRules } from "../composables/validationRules"
-
 const { createAccount, signUser, togglePassword, hidePassword, sucessModal, userExist, isLoading, handleFileChange } = signUpApi();
-
+const router = useRouter();
 const confirm = [
   confirmPasswordRules(signUser),
 ]
+const handleCloseModal = () => {
+  sucessModal.value = false
+  router.push('/posts');
+};
+
 const hasErrors = computed(() => {
   const errorFields = [
     ...nameRules.map(rule => rule(signUser.firstName)),
