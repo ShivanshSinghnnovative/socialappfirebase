@@ -76,6 +76,9 @@
           <v-col v-if="sucessModal" cols="12">
             <sucessfullSignUp :content="'You have successfully registered'" @closeModals="handleCloseModal" />
           </v-col>
+          <v-col cols="12" class="mt-1 text-center">
+            <socialAuthenticator />
+          </v-col>
         </v-card>
       </v-col>
     </v-row>
@@ -87,6 +90,7 @@ import { computed, onMounted } from 'vue';
 import { signUpApi } from '../composables/loginSignup.js';
 import { useRouter } from 'vue-router'
 import sucessfullSignUp from '../components/sucessfullModal.vue'
+import socialAuthenticator from '../components/socialAppsLoginSignUp.vue'
 import { confirmPasswordRules, requiredField, nameRules, phoneRules, emailRules, passwordRules, profileRules } from "../composables/validationRules"
 const { createAccount, signUser, togglePassword, hidePassword, sucessModal, userExist, isLoading, handleFileChange } = signUpApi();
 const router = useRouter();
