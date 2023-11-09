@@ -19,7 +19,7 @@ export const signUpApi = () => {
         profilePhoto: null,
     });
     const store = useAuthUserStore();
-    const { createUser } = store;
+    const { createUser , createUserGoogle , createUserFacebook , createUserTwitter} = store;
     const { existUserError } = storeToRefs(store)
 
     const createAccount = async () => {
@@ -42,6 +42,15 @@ export const signUpApi = () => {
             userExist.value = true;
             isLoading.value = false;
         }
+    };
+    const createAccountwithGoogle = async () =>{
+        await createUserGoogle();
+    };
+    const createAccountwithFacebook = async () =>{
+        await createUserFacebook();
+    };
+    const createAccountwithTwitter = async () =>{
+        await createUserTwitter();
     };
     const resetForm = () => {
         signUser.firstName = "";
@@ -67,6 +76,9 @@ export const signUpApi = () => {
         sucessModal,
         isLoading,
         handleFileChange,
+        createAccountwithGoogle,
+        createAccountwithFacebook,
+        createAccountwithTwitter
     };
 }
 

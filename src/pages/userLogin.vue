@@ -53,6 +53,9 @@
                             </v-col>
                         </v-form>
                     </v-card-text>
+                    <v-col cols="12" class="mt-1 text-center">
+                     <socialIcon/>
+                    </v-col>
                 </v-card>
             </v-col>
         </v-row>
@@ -62,6 +65,7 @@
 <script setup>
 import { computed } from "vue";
 import { loginApi } from "../composables/loginSignup.js";
+import socialIcon from '../components/socialAppsLoginSignUp.vue'
 import { requiredField } from "../composables/validationRules";
 const {
     loginUser,

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "firebase/auth";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup, FacebookAuthProvider, TwitterAuthProvider } from "firebase/auth";
 import { collection, addDoc, getDocs, doc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { app, db } from '../firebase.js';
@@ -9,6 +9,9 @@ import { useRouter } from 'vue-router';
 
 const auth = getAuth(app);
 const storage = getStorage();
+const provider = new GoogleAuthProvider();
+const facebookProvider = new FacebookAuthProvider();
+const twitterProvider = new TwitterAuthProvider();
 
 export const useAuthUserStore = defineStore('useAuth', () => {
     const state = reactive({
@@ -48,22 +51,7 @@ export const useAuthUserStore = defineStore('useAuth', () => {
     const createUser = async (userData) => {
         try {
             const authResult = await createUserWithEmailAndPassword(auth, userData.email, userData.password);
-            const storageRef = ref(storage, `userProfile/${authResult.user.uid}/profilepic`);
-            await uploadBytes(storageRef, userData.profilepic);
-            const downloadURL = await getDownloadURL(storageRef);
-            const payload = {
-                uid: authResult.user.uid,
-                firstName: userData.firstName,
-                lastName: userData.lastName,
-                mobileNumber: userData.mobileNumber,
-                email: userData.email,
-                profilePhotoPath: downloadURL
-            }
-            const storedata = await addDoc(collection(db, "userDetails"), payload)
-            state.existUserError = false;
-            if (storedata) {
-                state.userDetails = payload
-            }
+            await storeUserData(authResult.user.uid, userData);
         } catch (error) {
             console.log(error);
             state.existUserError = true;
@@ -90,7 +78,56 @@ export const useAuthUserStore = defineStore('useAuth', () => {
             console.log(error)
         }
     }
+    const createUserGoogle = async () => {
+        await createAccountWithAuthProvider(provider);
+    };
+
+    const createUserFacebook = async () => {
+        await createAccountWithAuthProvider(facebookProvider);
+    };
+
+    const createUserTwitter = async () => {
+        await createAccountWithAuthProvider(twitterProvider);
+    };
+    const createAccountWithAuthProvider = async (provider) => {
+        try {
+            const result = await signInWithPopup(auth, provider);
+            const credential = provider.credentialFromResult(result);
+            const user = result.user;
+            await storeUserData(user.uid, {
+                firstName: user.displayName.split(' ')[0],
+                lastName: user.displayName.split(' ')[1] || '',
+                email: user.email,
+                profilepic: user.photoURL,
+            });
+        } catch (error) {
+            console.error( error);
+        }
+        router.push('/posts')
+    };
+    
+    const storeUserData = async (uid, userData) => {
+        const storageRef = ref(storage, `userProfile/${uid}/profilepic`);
+        await uploadBytes(storageRef, userData.profilepic);
+        const downloadURL = await getDownloadURL(storageRef);
+        const payload = {
+            uid: uid,
+            firstName: userData.firstName,
+            lastName: userData.lastName,
+            mobileNumber: userData.mobileNumber || '',
+            email: userData.email,
+            profilePhotoPath: downloadURL,
+        };
+        const storedata = await addDoc(collection(db, 'userDetails'), payload);
+        state.existUserError = false;
+
+        if (storedata) {
+            state.userDetails = payload;            
+        }
+    };
+
+
     const userDetails = computed(() => state.userDetails);
     const userLoggedIn = computed(() => state.userLoggedIn);
-    return { createUser, userDetails, userLoggedIn, logout, signInUser, ...toRefs(state) };
+    return { createUser, userDetails, userLoggedIn, logout, signInUser, createUserGoogle, createUserFacebook, createUserTwitter, ...toRefs(state) };
 });
