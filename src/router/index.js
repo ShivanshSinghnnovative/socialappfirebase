@@ -1,23 +1,28 @@
 import { createRouter, createWebHashHistory } from 'vue-router';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 
-const userIsLoggedIn = () => {
-  return localStorage.getItem('UID') !== null;
-}
+const auth = getAuth();
 
 const afterSuccessfulLoginsignup = (to, from, next) => {
-  if (userIsLoggedIn()) {
-    next('/posts');
-  } else {
-    next();
-  }
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      next('/posts');
+    } else {
+      next();
+    }
+  });
 };
+
 const commonBeforeEnter = (to, from, next) => {
-  if (userIsLoggedIn()) {
-    next();
-  } else {
-    next('/');
-  }
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      next();
+    } else {
+      next('/');
+    }
+  });
 };
+
 const routes = [
   {
     path: '/register',
@@ -35,23 +40,25 @@ const routes = [
     path: '/posts',
     name: 'posts',
     component: () => import('@/pages/showPost.vue'),
-    beforeEnter: commonBeforeEnter
-
+    beforeEnter: commonBeforeEnter,
   },
-]
+];
+
 const router = createRouter({
   history: createWebHashHistory(process.env.BASE_URL),
-  routes
-})
-
-
+  routes,
+});
 
 router.beforeEach((to, from, next) => {
-  const isLoggedOut = (to.name !== 'login' && to.name !== 'register' && !userIsLoggedIn());
-  if (isLoggedOut) {
-    next({ name: 'login' });
-  } else {
-    next();
-  }
+  const isLoggedOut = to.name !== 'login' && to.name !== 'register';
+  onAuthStateChanged(auth, (user) => {
+    if (isLoggedOut && !user) {
+      next({ name: 'login' });
+    } else {
+      next();
+    }
+  });
 });
+
 export default router;
+

@@ -94,6 +94,7 @@ const confirm = [
   confirmPasswordRules(signUser),
 ]
 const handleCloseModal = () => {
+  sucessModal.value = false
   router.push('/posts');
 };
 

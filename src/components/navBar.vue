@@ -1,9 +1,9 @@
 <template>
   <v-card class="fixed">
-    <v-layout>
+    <v-layout v-if="userDetails">
       <v-navigation-drawer v-model="drawer" :rail="rail" permanent @click="rail = false">
         <v-list>
-          <v-list-item v-if="userDetails" nav>
+          <v-list-item nav>
             <v-avatar>
               <v-img :src="userDetails.profilePhotoPath" alt="Profile Picture"></v-img>
             </v-avatar>

@@ -64,7 +64,6 @@ export const useAuthUserStore = defineStore('useAuth', () => {
             if (storedata) {
                 state.userDetails = payload
             }
-            localStorage.setItem('UID', JSON.stringify(payload.uid));
         } catch (error) {
             console.log(error);
             state.existUserError = true;
@@ -75,7 +74,6 @@ export const useAuthUserStore = defineStore('useAuth', () => {
         try {
             const result = await signInWithEmailAndPassword(auth, loginUserDetails.email, loginUserDetails.password);
             state.invalidMailError = false;
-            localStorage.setItem('UID', JSON.stringify(loginUserDetails.uid));
         } catch (error) {
             console.error("Sign-in error:", error);
             state.invalidMailError = true;
@@ -88,7 +86,6 @@ export const useAuthUserStore = defineStore('useAuth', () => {
             signOut(auth).then(() => {
                 router.push('/')
             })
-            localStorage.removeItem('UID')
         } catch (error) {
             console.log(error)
         }

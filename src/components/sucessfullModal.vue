@@ -1,13 +1,12 @@
 <template>
-  <div v-if="sucessFullModal" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
-    @click="closeModal, $emit('closeModals')">
+  <div class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50" @click="closeModal">
     <div class="bg-green-700 p-4 md:p-8 text-center w-2/5 mx-auto" @click.stop>
       <div class="border-2 border-black p-4 md:p-8 text-white text-lg md:text-2xl">
         <div class="text-3xl font-bold">
           {{ content }}
         </div>
         <div>
-          <button @click="$emit('closeModals')"
+          <button @click="closeModal"
             class="mt-4 text-lg md:text-xl px-4 py-2 rounded bg-white text-black cursor-pointer">
             OK
           </button>
@@ -18,11 +17,11 @@
 </template>
 
 <script setup>
-import { defineEmits, ref, defineProps } from 'vue'
+import { defineEmits, defineProps } from 'vue'
 const { content } = defineProps(['content']);
-defineEmits(['closeModals']);
-const sucessFullModal = ref(true);
+const emit = defineEmits();
+
 const closeModal = () => {
-  sucessFullModal.value = false;
+  emit('closeModals');
 };
 </script>
