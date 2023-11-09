@@ -11,7 +11,7 @@ export const navTitleArr = [
     },
     {
         id: "3",
-        title: "Users",
+        title: "Update Details",
         icon: "mdi-account-group-outline",
     },
 ];

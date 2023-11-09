@@ -42,6 +42,12 @@ const routes = [
     component: () => import('@/pages/showPost.vue'),
     beforeEnter: commonBeforeEnter,
   },
+  {
+    path: '/updateuserdetails',
+    name: 'detailsupdated',
+    component: () => import('@/pages/updateUserDetails.vue'),
+    beforeEnter: commonBeforeEnter,
+  },
 ];
 
 const router = createRouter({
