@@ -1,20 +1,17 @@
 <template>
-    <div>
-        <v-btn icon class="mr-2" @click="createAccountwithFacebook">
-            <v-icon color="blue">mdi-facebook</v-icon>
-          </v-btn>
-          <v-btn icon class="mr-2" @click="createAccountwithGoogle">
-            <v-icon color="red">mdi-google</v-icon>
-          </v-btn>
-          <v-btn icon @click="createAccountwithTwitter">
-            <v-icon color="lightblue">mdi-twitter</v-icon>
-          </v-btn>
-    </div>
+  <div>
+    <v-btn v-for="(socialButton, index) in socialButtons" :key="index" icon class="mr-2"
+      @click="handleSubmit(socialButton.action)">
+      <v-icon :color="socialButton.color">{{ socialButton.icon }}</v-icon>
+    </v-btn>
+  </div>
 </template>
 
 <script setup>
-
 import { signUpApi } from '../composables/loginSignup.js';
-const { createAccountwithGoogle, createAccountwithFacebook, createAccountwithTwitter } = signUpApi();
+import { socialButtons } from '../navBarTitles/config.js'
 
+const handleSubmit = (action) => {
+  signUpApi()[action]()
+}
 </script>

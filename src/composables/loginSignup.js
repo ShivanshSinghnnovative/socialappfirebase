@@ -19,7 +19,7 @@ export const signUpApi = () => {
         profilePhoto: null,
     });
     const store = useAuthUserStore();
-    const { createUser , createUserGoogle , createUserFacebook , createUserTwitter} = store;
+    const { createUser, createUserGoogle, createUserFacebook, createUserTwitter } = store;
     const { existUserError } = storeToRefs(store)
 
     const createAccount = async () => {
@@ -43,13 +43,13 @@ export const signUpApi = () => {
             isLoading.value = false;
         }
     };
-    const createAccountwithGoogle = async () =>{
+    const createAccountwithGoogle = async () => {
         await createUserGoogle();
     };
-    const createAccountwithFacebook = async () =>{
+    const createAccountwithFacebook = async () => {
         await createUserFacebook();
     };
-    const createAccountwithTwitter = async () =>{
+    const createAccountwithTwitter = async () => {
         await createUserTwitter();
     };
     const resetForm = () => {

@@ -54,7 +54,7 @@
                         </v-form>
                     </v-card-text>
                     <v-col cols="12" class="mt-1 text-center">
-                     <socialIcon/>
+                        <socialAuthenticator />
                     </v-col>
                 </v-card>
             </v-col>
@@ -65,7 +65,7 @@
 <script setup>
 import { computed } from "vue";
 import { loginApi } from "../composables/loginSignup.js";
-import socialIcon from '../components/socialAppsLoginSignUp.vue'
+import socialAuthenticator from '../components/socialAppsLoginSignUp.vue'
 import { requiredField } from "../composables/validationRules";
 const {
     loginUser,

@@ -101,11 +101,11 @@ export const useAuthUserStore = defineStore('useAuth', () => {
                 profilepic: user.photoURL,
             });
         } catch (error) {
-            console.error( error);
+            console.error(error);
         }
         router.push('/posts')
     };
-    
+
     const storeUserData = async (uid, userData) => {
         const storageRef = ref(storage, `userProfile/${uid}/profilepic`);
         await uploadBytes(storageRef, userData.profilepic);
@@ -122,10 +122,9 @@ export const useAuthUserStore = defineStore('useAuth', () => {
         state.existUserError = false;
 
         if (storedata) {
-            state.userDetails = payload;            
+            state.userDetails = payload;
         }
     };
-
 
     const userDetails = computed(() => state.userDetails);
     const userLoggedIn = computed(() => state.userLoggedIn);
