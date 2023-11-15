@@ -8,8 +8,10 @@ export const navTitleArr = [
     },
     {
         id: "2",
-        title: "My Account",
-        icon: "mdi-account",
+        title: "Add Posts",
+        icon: "mdi-plus",
+        href: '/addpost',
+        name: 'addpost'
     },
     {
         id: "3",

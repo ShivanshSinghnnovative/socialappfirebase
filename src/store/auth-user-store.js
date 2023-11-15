@@ -6,6 +6,7 @@ import { app, db } from "../firebase.js";
 import { reactive, toRefs } from "vue";
 import { computed } from "vue";
 import { useRouter } from "vue-router";
+import slugify from 'slugify';
 
 const auth = getAuth(app);
 const storage = getStorage();
@@ -157,9 +158,38 @@ export const useAuthUserStore = defineStore("useAuth", () => {
         }
     };
 
+    const addPosts = async (postDetails) => {
+        try {
+            const slug = slugify(postDetails.title, {
+                lower: true,
+                strict: true,
+              });
+            const timestamp = new Date().toISOString();
+            const createdBy = state.userDetails.uid; 
+        
+            const postData = {
+                title: postDetails.title,
+                description: postDetails.description,
+                slug: slug,
+                createdAt: timestamp,
+                updatedAt: timestamp,
+                updatedBy: createdBy,
+                photo: postDetails.photo,
+            }
+            console.log(postData)
+            const postId = await addDoc(collection(db, "post"), postData);
+            console.log(postId)
+        }
+        catch (err) {
+            console.log(err)
+            console.log(postDetails)
+        }
+
+    };
+
     const userDetails = computed(() => state.userDetails);
     const userLoggedIn = computed(() => state.userLoggedIn);
     return {
-        createUser, userDetails, userLoggedIn, logout, signInUser, updateUserDetails, uploadProfilePhoto, createUserGoogle, createUserFacebook, createUserTwitter, ...toRefs(state),
+        createUser, userDetails, userLoggedIn, addPosts, logout, signInUser, updateUserDetails, uploadProfilePhoto, createUserGoogle, createUserFacebook, createUserTwitter, ...toRefs(state),
     };
 });
