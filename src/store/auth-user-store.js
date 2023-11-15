@@ -1,11 +1,11 @@
-import { defineStore } from 'pinia';
+import { defineStore } from "pinia";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup, FacebookAuthProvider, TwitterAuthProvider } from "firebase/auth";
-import { collection, addDoc, getDocs, doc, query, where, setDoc } from "firebase/firestore";
+import { collection, addDoc, getDocs, doc, query, where, setDoc, } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { app, db } from '../firebase.js';
-import { reactive, toRefs } from 'vue';
-import { computed } from 'vue';
-import { useRouter } from 'vue-router';
+import { app, db } from "../firebase.js";
+import { reactive, toRefs } from "vue";
+import { computed } from "vue";
+import { useRouter } from "vue-router";
 
 const auth = getAuth(app);
 const storage = getStorage();
@@ -13,13 +13,13 @@ const provider = new GoogleAuthProvider();
 const facebookProvider = new FacebookAuthProvider();
 const twitterProvider = new TwitterAuthProvider();
 
-export const useAuthUserStore = defineStore('useAuth', () => {
+export const useAuthUserStore = defineStore("useAuth", () => {
     const state = reactive({
         userLoggedIn: false,
         userDetails: null,
         invalidMailError: false,
         existUserError: false,
-    })
+    });
     const getUserDetails = async (uid) => {
         try {
             const userDoc = await getDocs(collection(db, "userDetails"));
@@ -50,7 +50,11 @@ export const useAuthUserStore = defineStore('useAuth', () => {
 
     const createUser = async (userData) => {
         try {
-            const authResult = await createUserWithEmailAndPassword(auth, userData.email, userData.password);
+            const authResult = await createUserWithEmailAndPassword(
+                auth,
+                userData.email,
+                userData.password
+            );
             await storeUserData(authResult.user.uid, userData);
         } catch (error) {
             console.log(error);
@@ -70,16 +74,16 @@ export const useAuthUserStore = defineStore('useAuth', () => {
 
     const updateUserDetails = async (uid, updatedDetails) => {
         try {
-            const userDetailsCollection = collection(db, 'userDetails');
-            const querySnapshot = await getDocs(query(userDetailsCollection, where('uid', '==', uid)));
+            const userDetailsCollection = collection(db, "userDetails");
+            const querySnapshot = await getDocs(query(userDetailsCollection, where("uid", "==", uid)));
             if (!querySnapshot.empty) {
                 const userDocRef = querySnapshot.docs[0].ref;
                 await setDoc(userDocRef, updatedDetails, { merge: true });
             } else {
-                console.error('User document not found for UID:', uid);
+                console.error("User document not found for UID:", uid);
             }
         } catch (error) {
-            console.error('Error updating user details:', error);
+            console.error("Error updating user details:", error);
         }
     };
     const uploadProfilePhoto = async (file) => {
@@ -90,7 +94,7 @@ export const useAuthUserStore = defineStore('useAuth', () => {
             state.userDetails.profilePhotoPath = downloadURL;
             return downloadURL;
         } catch (error) {
-            console.error('Error uploading profile photo:', error);
+            console.error("Error uploading profile photo:", error);
             return null;
         }
     };
@@ -98,12 +102,12 @@ export const useAuthUserStore = defineStore('useAuth', () => {
     const logout = async () => {
         try {
             signOut(auth).then(() => {
-                router.push('/')
-            })
+                router.push("/");
+            });
         } catch (error) {
-            console.log(error)
+            console.log(error);
         }
-    }
+    };
     const createUserGoogle = async () => {
         await createAccountWithAuthProvider(provider);
     };
@@ -121,31 +125,31 @@ export const useAuthUserStore = defineStore('useAuth', () => {
             const credential = provider.credentialFromResult(result);
             const user = result.user;
             await storeUserData(user.uid, {
-                firstName: user.displayName.split(' ')[0],
-                lastName: user.displayName.split(' ')[1] || '',
+                firstName: user.displayName.split(" ")[0],
+                lastName: user.displayName.split(" ")[1] || "",
                 email: user.email,
                 profilepic: user.photoURL,
             });
         } catch (error) {
             console.error(error);
         }
-        router.push('/posts')
+        router.push("/posts");
     };
 
     const storeUserData = async (uid, userData) => {
         const storageRef = ref(storage, `userProfile/${uid}/profilepic`);
         await uploadBytes(storageRef, userData.profilepic);
-        console.log(userData.profilepic)
+        console.log(userData.profilepic);
         const downloadURL = await getDownloadURL(storageRef);
         const payload = {
             uid: uid,
             firstName: userData.firstName,
             lastName: userData.lastName,
-            mobileNumber: userData.mobileNumber || '',
+            mobileNumber: userData.mobileNumber || "",
             email: userData.email,
             profilePhotoPath: downloadURL,
         };
-        const storedata = await addDoc(collection(db, 'userDetails'), payload);
+        const storedata = await addDoc(collection(db, "userDetails"), payload);
         state.existUserError = false;
 
         if (storedata) {
@@ -155,5 +159,7 @@ export const useAuthUserStore = defineStore('useAuth', () => {
 
     const userDetails = computed(() => state.userDetails);
     const userLoggedIn = computed(() => state.userLoggedIn);
-    return { createUser, userDetails, userLoggedIn, logout, signInUser, updateUserDetails, uploadProfilePhoto, createUserGoogle, createUserFacebook, createUserTwitter, ...toRefs(state) };
+    return {
+        createUser, userDetails, userLoggedIn, logout, signInUser, updateUserDetails, uploadProfilePhoto, createUserGoogle, createUserFacebook, createUserTwitter, ...toRefs(state),
+    };
 });

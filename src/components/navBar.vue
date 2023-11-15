@@ -21,9 +21,9 @@
         <v-list density="compact" nav>
           <div v-for="item in navTitleArr" :key="item.id">
             <v-list-item @click="navigateRoute(item.id, item.href)" :prepend-icon="item.icon" :title="item.title"
-              class="mt-2" :class="{
+              class="mt-2 text-white" :class="{
                 'bg-blue-950': route.name === item.name,
-                'bg-gray-200': route.name !== item.name
+                'bg-black': route.name !== item.name
               }" value="home" :disabled="route.name === item.name"></v-list-item>
           </div>
         </v-list>
