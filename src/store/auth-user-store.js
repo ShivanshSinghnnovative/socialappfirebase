@@ -82,7 +82,18 @@ export const useAuthUserStore = defineStore('useAuth', () => {
             console.error('Error updating user details:', error);
         }
     };
-
+    const uploadProfilePhoto = async (file) => {
+        try {
+            const storageRef = ref(storage, `userProfile/${userDetails.value.uid}/profilepic`);
+            await uploadBytes(storageRef, file[0]);
+            const downloadURL = await getDownloadURL(storageRef);
+            state.userDetails.profilePhotoPath = downloadURL;
+            return downloadURL;
+        } catch (error) {
+            console.error('Error uploading profile photo:', error);
+            return null;
+        }
+    };
     const router = useRouter();
     const logout = async () => {
         try {
@@ -124,6 +135,7 @@ export const useAuthUserStore = defineStore('useAuth', () => {
     const storeUserData = async (uid, userData) => {
         const storageRef = ref(storage, `userProfile/${uid}/profilepic`);
         await uploadBytes(storageRef, userData.profilepic);
+        console.log(userData.profilepic)
         const downloadURL = await getDownloadURL(storageRef);
         const payload = {
             uid: uid,
@@ -143,5 +155,5 @@ export const useAuthUserStore = defineStore('useAuth', () => {
 
     const userDetails = computed(() => state.userDetails);
     const userLoggedIn = computed(() => state.userLoggedIn);
-    return { createUser, userDetails, userLoggedIn, logout, signInUser, updateUserDetails, createUserGoogle, createUserFacebook, createUserTwitter, ...toRefs(state) };
+    return { createUser, userDetails, userLoggedIn, logout, signInUser, updateUserDetails, uploadProfilePhoto, createUserGoogle, createUserFacebook, createUserTwitter, ...toRefs(state) };
 });
