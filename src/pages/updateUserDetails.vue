@@ -71,7 +71,7 @@ const isLoading = ref(false);
 const handleUpdateDetails = async () => {
   isLoading.value = true;
   if (userDetails.value) {
-    const newProfilePhoto = profilepic.value ? await uploadProfilePhoto(profilepic.value) + `?timestamp=${Date.now()}` : userDetails.profilePhotoPath;
+    const newProfilePhoto = profilepic.value ? await uploadProfilePhoto(profilepic.value) : userDetails.profilePhotoPath;
     const updatedDetails = {
       firstName: userDetails.value.firstName,
       lastName: userDetails.value.lastName,
