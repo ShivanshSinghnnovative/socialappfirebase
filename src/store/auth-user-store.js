@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup,  FacebookAuthProvider,  TwitterAuthProvider,} from "firebase/auth";
-import { collection,  addDoc,  getDocs,  doc,  query,  where,  setDoc,} from "firebase/firestore";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup, FacebookAuthProvider, TwitterAuthProvider } from "firebase/auth";
+import { collection, addDoc, getDocs, doc, query, where, setDoc, } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { app, db } from "../firebase.js";
 import { reactive, toRefs } from "vue";
@@ -64,11 +64,7 @@ export const useAuthUserStore = defineStore("useAuth", () => {
 
     const signInUser = async (loginUserDetails) => {
         try {
-            const result = await signInWithEmailAndPassword(
-                auth,
-                loginUserDetails.email,
-                loginUserDetails.password
-            );
+            const result = await signInWithEmailAndPassword(auth, loginUserDetails.email, loginUserDetails.password);
             state.invalidMailError = false;
         } catch (error) {
             console.error("Sign-in error:", error);
@@ -79,9 +75,7 @@ export const useAuthUserStore = defineStore("useAuth", () => {
     const updateUserDetails = async (uid, updatedDetails) => {
         try {
             const userDetailsCollection = collection(db, "userDetails");
-            const querySnapshot = await getDocs(
-                query(userDetailsCollection, where("uid", "==", uid))
-            );
+            const querySnapshot = await getDocs(query(userDetailsCollection, where("uid", "==", uid)));
             if (!querySnapshot.empty) {
                 const userDocRef = querySnapshot.docs[0].ref;
                 await setDoc(userDocRef, updatedDetails, { merge: true });
@@ -94,10 +88,7 @@ export const useAuthUserStore = defineStore("useAuth", () => {
     };
     const uploadProfilePhoto = async (file) => {
         try {
-            const storageRef = ref(
-                storage,
-                `userProfile/${userDetails.value.uid}/profilepic`
-            );
+            const storageRef = ref(storage, `userProfile/${userDetails.value.uid}/profilepic`);
             await uploadBytes(storageRef, file[0]);
             const downloadURL = await getDownloadURL(storageRef);
             state.userDetails.profilePhotoPath = downloadURL;
@@ -169,16 +160,6 @@ export const useAuthUserStore = defineStore("useAuth", () => {
     const userDetails = computed(() => state.userDetails);
     const userLoggedIn = computed(() => state.userLoggedIn);
     return {
-        createUser,
-        userDetails,
-        userLoggedIn,
-        logout,
-        signInUser,
-        updateUserDetails,
-        uploadProfilePhoto,
-        createUserGoogle,
-        createUserFacebook,
-        createUserTwitter,
-        ...toRefs(state),
+        createUser, userDetails, userLoggedIn, logout, signInUser, updateUserDetails, uploadProfilePhoto, createUserGoogle, createUserFacebook, createUserTwitter, ...toRefs(state),
     };
 });
