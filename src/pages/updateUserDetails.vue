@@ -22,9 +22,19 @@
                 </v-text-field>
               </v-col>
               <v-col cols="12">
-                <v-btn class="mt-2 pointer ml-10" color="blue" type="submit" dark @click="handleUpdateDetails">
-                  <div>
-                    Update</div>
+                <v-file-input v-model="profilepic" label="update profile photo"
+                  :rules="[requiredField, profileRules].flat()" accept="image/*">
+                </v-file-input>
+              </v-col>
+              <v-col cols="12">
+                <v-btn class="mt-2 pointer ml-1" color="blue" type="submit" dark @click="handleUpdateDetails">
+                  <div v-if="!isLoading">
+                    Update
+                  </div>
+                  <div v-else>
+                    <v-progress-circular indeterminate>
+                    </v-progress-circular>
+                  </div>
                 </v-btn>
               </v-col>
             </v-row>
@@ -47,25 +57,30 @@
 <script setup>
 import { ref } from "vue";
 import { storeToRefs } from 'pinia';
-import { requiredField, nameRules, phoneRules } from "../composables/validationRules"
+import { requiredField, nameRules, phoneRules, profileRules } from "../composables/validationRules"
 import { useAuthUserStore } from '../store/auth-user-store.js';
 import { useRouter } from "vue-router";
 import sucessfullSignUp from '../components/sucessfullModal.vue'
-const { updateUserDetails } = useAuthUserStore();
+const { updateUserDetails, uploadProfilePhoto } = useAuthUserStore();
 const store = useAuthUserStore();
 const { userDetails } = storeToRefs(store);
 const router = useRouter();
 const sucessModal = ref(false);
-
+const profilepic = ref(null);
+const isLoading = ref(false);
 const handleUpdateDetails = async () => {
+  isLoading.value = true;
   if (userDetails.value) {
+    const newProfilePhoto = profilepic.value ? await uploadProfilePhoto(profilepic.value) : userDetails.profilePhotoPath;
     const updatedDetails = {
       firstName: userDetails.value.firstName,
       lastName: userDetails.value.lastName,
       mobileNumber: userDetails.value.mobileNumber,
+      profilePhotoPath: newProfilePhoto
     };
     await updateUserDetails(userDetails.value.uid, updatedDetails);
     sucessModal.value = true;
+    isLoading.value = false;
   }
 };
 const handleCloseModal = () => {

@@ -3,7 +3,8 @@ export const navTitleArr = [
         id: "1",
         title: "Home",
         icon: "mdi-home-city",
-        href: '/posts'
+        href: '/posts',
+        name: 'posts'
     },
     {
         id: "2",
@@ -15,6 +16,7 @@ export const navTitleArr = [
         title: "Update Details",
         icon: "mdi-account-group-outline",
         href: '/updateuserdetails',
+        name: 'detailsupdated'
     },
 ];
 
