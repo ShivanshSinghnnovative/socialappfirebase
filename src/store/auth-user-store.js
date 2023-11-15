@@ -1,24 +1,6 @@
 import { defineStore } from "pinia";
-import {
-    getAuth,
-    createUserWithEmailAndPassword,
-    signInWithEmailAndPassword,
-    onAuthStateChanged,
-    signOut,
-    GoogleAuthProvider,
-    signInWithPopup,
-    FacebookAuthProvider,
-    TwitterAuthProvider,
-} from "firebase/auth";
-import {
-    collection,
-    addDoc,
-    getDocs,
-    doc,
-    query,
-    where,
-    setDoc,
-} from "firebase/firestore";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, onAuthStateChanged, signOut, GoogleAuthProvider, signInWithPopup,  FacebookAuthProvider,  TwitterAuthProvider,} from "firebase/auth";
+import { collection,  addDoc,  getDocs,  doc,  query,  where,  setDoc,} from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { app, db } from "../firebase.js";
 import { reactive, toRefs } from "vue";
