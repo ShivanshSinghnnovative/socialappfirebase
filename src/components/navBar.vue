@@ -20,7 +20,8 @@
         <v-divider></v-divider>
         <v-list density="compact" nav>
           <div v-for="item in navTitleArr" :key="item.id">
-            <v-list-item :prepend-icon="item.icon" :title="item.title" value="home">
+            <v-list-item @click="navigateRoute(item.id, item.href)" :prepend-icon="item.icon" :title="item.title"
+              :class="activeButton === item.id ? 'bg-blue-950' : 'bg-gray-200'" value="home">
             </v-list-item>
           </div>
         </v-list>
@@ -35,6 +36,13 @@ import { ref } from 'vue';
 import { storeToRefs } from 'pinia';
 import { useAuthUserStore } from '../store/auth-user-store.js';
 import { navTitleArr } from '../navBarTitles/config.js'
+import { useRouter } from 'vue-router';
+const router = useRouter();
+const activeButton = ref(null);
+const navigateRoute = (id, href) => {
+  router.push(href)
+  activeButton.value = id
+}
 const drawer = ref(true);
 const rail = ref(true);
 const store = useAuthUserStore();
