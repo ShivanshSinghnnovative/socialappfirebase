@@ -139,7 +139,6 @@ export const useAuthUserStore = defineStore("useAuth", () => {
     const storeUserData = async (uid, userData) => {
         const storageRef = ref(storage, `userProfile/${uid}/profilepic`);
         await uploadBytes(storageRef, userData.profilepic);
-        console.log(userData.profilepic);
         const downloadURL = await getDownloadURL(storageRef);
         const payload = {
             uid: uid,
@@ -156,6 +155,7 @@ export const useAuthUserStore = defineStore("useAuth", () => {
             state.userDetails = payload;
         }
     };
+
 
     const userDetails = computed(() => state.userDetails);
     const userLoggedIn = computed(() => state.userLoggedIn);

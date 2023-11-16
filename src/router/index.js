@@ -48,6 +48,12 @@ const routes = [
     component: () => import('@/pages/updateUserDetails.vue'),
     beforeEnter: commonBeforeEnter,
   },
+  {
+    path: '/addpost',
+    name: 'addpost',
+    component: () => import('@/pages/addPosts.vue'),
+    beforeEnter: commonBeforeEnter,
+  },
 ];
 
 const router = createRouter({
