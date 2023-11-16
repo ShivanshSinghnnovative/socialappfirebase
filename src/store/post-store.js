@@ -8,7 +8,7 @@ const store = useAuthUserStore();
 const { userDetails } = storeToRefs(store);
 const storage = getStorage();
 
-export const postUserStore = (() => {
+export const userPostStore = (() => {
 
     const addPosts = async (postDetails) => {
         try {

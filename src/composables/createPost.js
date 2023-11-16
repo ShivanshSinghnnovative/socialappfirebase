@@ -1,7 +1,7 @@
 import { reactive, ref } from "vue";
-import { postUserStore } from '../store/post-store.js';
+import { userPostStore } from '../store/post-store.js';
 
-const store = postUserStore();
+const store = userPostStore();
 
 const { addPosts } = store;
 export const createPostApi = () => {
