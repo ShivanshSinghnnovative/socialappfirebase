@@ -1,5 +1,5 @@
 import { ref, uploadBytes, getStorage, getDownloadURL } from "firebase/storage";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, getDocs, doc, setDoc } from "firebase/firestore";
 import { db } from "../firebase.js";
 import slugify from 'slugify';
 import { useAuthUserStore } from './auth-user-store.js';
@@ -30,12 +30,36 @@ export const postStore = (() => {
                 updatedBy: createdBy,
                 photo: downloadURL,
             }
-            const postId = await addDoc(collection(db, "post"), postData);
+            const postRef = await addDoc(collection(db, "post"), postData);
+            console.log(postRef.id)
+            const taggedUserRef = collection(db, `post/${postRef.id}/taggedUsers`);
+            await addDoc(taggedUserRef, { userId: postDetails.taggedUsers });
         }
         catch (error) {
             console.log(error)
         }
 
     };
-    return { addPost };
+    const getUsersList = async () => {
+        try {
+            const userCollection = collection(db, "userDetails");
+            const userDocs = await getDocs(userCollection);
+            const usersList = [];
+
+            userDocs.forEach((doc) => {
+                const userData = doc.data();
+                usersList.push({
+                    uid: userData.uid,
+                    firstName: userData.firstName,
+                    lastName: userData.lastName,
+                });
+            });
+
+            return usersList;
+        } catch (error) {
+            console.error("Error fetching users list:", error);
+            return [];
+        }
+    };
+    return { addPost, getUsersList };
 });

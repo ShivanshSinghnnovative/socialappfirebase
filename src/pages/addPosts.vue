@@ -23,6 +23,10 @@
                                         label="Description" outlined>
                                     </v-text-field>
                                 </v-col>
+                                <v-col cols="12" v-if="userListLoaded">
+                                    <v-select v-model="postDetails.taggedUsers" :items="userList" item-value="uid" item-title="firstName" multiple label="Select Users" outlined>
+                                    </v-select>
+                                </v-col>
                                 <v-col cols="12">
                                     <v-btn class="mt-2 pointer ml-1" color="blue" type="submit" dark :disabled="hasErrors">
                                         <div v-if="!isLoading">
@@ -47,13 +51,30 @@
 <script setup>
 import { createPostApi } from '../composables/createPost.js'
 import { requiredField } from "../composables/validationRules"
+import { ref } from 'vue';
 import sucessfullModal from '@/components/sucessfullModal.vue';
+import { onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
+const userListLoaded = ref(false);
 const router = useRouter();
-const { postDetails, createPost, isLoading, sucessModal , hasErrors } = createPostApi()
+const { postDetails, createPost, isLoading, sucessModal, hasErrors } = createPostApi()
+import { postStore } from '../store/post-store.js'
+const { getUsersList } = postStore();
+let userList = [];
+const fetchUsersList = async () => {
+    userList = await getUsersList();
+    postDetails.taggedUsers = [];
+    userListLoaded.value = true;
+    return userList;
+};
+onMounted(async () => {
+    await fetchUsersList();
+});
 
 const handleCloseModal = () => {
     sucessModal.value = false
     router.push('/posts');
 };
+
 </script>
+
