@@ -1,9 +1,7 @@
 import { reactive, ref } from "vue";
-import { useAuthUserStore } from '../store/auth-user-store.js';
+import { postUserStore } from '../store/post-store.js';
 
-import { storeToRefs } from 'pinia';
-const store = useAuthUserStore();
-const { userDetails } = storeToRefs(store);
+const store = postUserStore();
 
 const { addPosts } = store;
 export const createPostApi = () => {
