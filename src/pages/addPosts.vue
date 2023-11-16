@@ -14,23 +14,30 @@
                                     </v-text-field>
                                 </v-col>
                                 <v-col cols="12">
-                                    <v-file-input v-model="postDetails.photo" :rules="requiredField" label="Upload  Photo" accept="image/*">
+                                    <v-file-input v-model="postDetails.photo" :rules="requiredField" label="Upload  Photo"
+                                        accept="image/*">
                                     </v-file-input>
                                 </v-col>
                                 <v-col cols="12">
-                                    <v-text-field v-model="postDetails.description" :rules="requiredField" label="Description" outlined>
+                                    <v-text-field v-model="postDetails.description" :rules="requiredField"
+                                        label="Description" outlined>
                                     </v-text-field>
                                 </v-col>
                                 <v-col cols="12">
                                     <v-btn class="mt-2 pointer ml-1" color="blue" type="submit" dark :disabled="hasErrors">
-                                        <div>
-                                            Add Post
+                                        <div v-if="!isLoading">
+                                            Add Post</div>
+                                        <div v-else>
+                                            <v-progress-circular indeterminate></v-progress-circular>
                                         </div>
                                     </v-btn>
                                 </v-col>
                             </v-row>
                         </v-form>
                     </v-card-text>
+                    <v-col v-if="sucessModal" cols="12">
+                        <sucessfullModal :content="'You have successfully Add Post'" @closeModals="handleCloseModal" />
+                    </v-col>
                 </v-card>
             </v-col>
         </v-row>
@@ -41,8 +48,10 @@
 import { computed } from 'vue';
 import { createPostApi } from '../composables/createPost.js'
 import { requiredField } from "../composables/validationRules"
-
-const { postDetails , createPostsByUser } = createPostApi()
+import sucessfullModal from '@/components/sucessfullModal.vue';
+import { useRouter } from 'vue-router';
+const router = useRouter();
+const { postDetails, createPostsByUser, isLoading, sucessModal } = createPostApi()
 const hasErrors = computed(() => {
     const errorFields = [
         ...requiredField.map((rule) => rule(postDetails.title)),
@@ -54,4 +63,8 @@ const hasErrors = computed(() => {
         Array.isArray(errors) ? errors.length > 0 : !!errors
     );
 });
+const handleCloseModal = () => {
+    sucessModal.value = false
+    router.push('/posts');
+};
 </script>

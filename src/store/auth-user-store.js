@@ -140,7 +140,6 @@ export const useAuthUserStore = defineStore("useAuth", () => {
     const storeUserData = async (uid, userData) => {
         const storageRef = ref(storage, `userProfile/${uid}/profilepic`);
         await uploadBytes(storageRef, userData.profilepic);
-        console.log(userData.profilepic);
         const downloadURL = await getDownloadURL(storageRef);
         const payload = {
             uid: uid,
@@ -163,10 +162,12 @@ export const useAuthUserStore = defineStore("useAuth", () => {
             const slug = slugify(postDetails.title, {
                 lower: true,
                 strict: true,
-              });
+            });
             const timestamp = new Date().toISOString();
-            const createdBy = state.userDetails.uid; 
-        
+            const createdBy = state.userDetails.uid;
+            const storageRef = ref(storage, `post/${createdBy}/postphotos${timestamp}`);
+            await uploadBytes(storageRef, postDetails.photo[0]);
+            const downloadURL = await getDownloadURL(storageRef);
             const postData = {
                 title: postDetails.title,
                 description: postDetails.description,
@@ -174,15 +175,12 @@ export const useAuthUserStore = defineStore("useAuth", () => {
                 createdAt: timestamp,
                 updatedAt: timestamp,
                 updatedBy: createdBy,
-                photo: postDetails.photo,
+                photo: downloadURL,
             }
-            console.log(postData)
             const postId = await addDoc(collection(db, "post"), postData);
-            console.log(postId)
         }
-        catch (err) {
-            console.log(err)
-            console.log(postDetails)
+        catch (error) {
+            console.log(error)
         }
 
     };
