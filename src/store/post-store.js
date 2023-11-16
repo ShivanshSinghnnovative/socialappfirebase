@@ -8,9 +8,9 @@ const store = useAuthUserStore();
 const { userDetails } = storeToRefs(store);
 const storage = getStorage();
 
-export const userPostStore = (() => {
+export const postStore = (() => {
 
-    const addPosts = async (postDetails) => {
+    const addPost = async (postDetails) => {
         try {
             const slug = slugify(postDetails.title, {
                 lower: true,
@@ -37,5 +37,5 @@ export const userPostStore = (() => {
         }
 
     };
-    return { addPosts };
+    return { addPost };
 });

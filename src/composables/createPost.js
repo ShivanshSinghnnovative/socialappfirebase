@@ -1,9 +1,11 @@
 import { reactive, ref } from "vue";
-import { userPostStore } from '../store/post-store.js';
+import { postStore } from '../store/post-store.js';
+import { computed } from 'vue';
 
-const store = userPostStore();
+import { requiredField } from './validationRules.js'
+const store = postStore();
 
-const { addPosts } = store;
+const { addPost } = store;
 export const createPostApi = () => {
     const postDetails = reactive({
         title: "",
@@ -12,10 +14,21 @@ export const createPostApi = () => {
     });
     const isLoading = ref(false)
     const sucessModal = ref(false)
-
-    const createPostsByUser = async () => {
+    
+    const hasErrors = computed(() => {
+        const errorFields = [
+            ...requiredField.map((rule) => rule(postDetails.title)),
+            ...requiredField.map((rule) => rule(postDetails.description)),
+            ...requiredField.map((rule) => rule(postDetails.photo)),
+        ];
+    
+        return errorFields.some((errors) =>
+            Array.isArray(errors) ? errors.length > 0 : !!errors
+        );
+    });
+    const createPost = async () => {
         isLoading.value = true
-        await addPosts({
+        await addPost({
             title: postDetails.title,
             photo: postDetails.photo,
             description: postDetails.description,
@@ -24,5 +37,5 @@ export const createPostApi = () => {
         sucessModal.value = true
     };
 
-    return { postDetails, createPostsByUser, isLoading, sucessModal }
+    return { postDetails, createPost, isLoading, sucessModal , hasErrors}
 }

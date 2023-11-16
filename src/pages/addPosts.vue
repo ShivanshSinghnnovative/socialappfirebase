@@ -7,7 +7,7 @@
                         <h1 class="text-h3 font-weight-bold mb-4 text-blue ">ADD POST</h1>
                     </v-card-title>
                     <v-card-text>
-                        <v-form @submit.prevent="createPostsByUser">
+                        <v-form @submit.prevent="createPost">
                             <v-row>
                                 <v-col cols="12">
                                     <v-text-field v-model="postDetails.title" :rules="requiredField" label="Title" outlined>
@@ -45,24 +45,13 @@
 </template>
    
 <script setup>
-import { computed } from 'vue';
 import { createPostApi } from '../composables/createPost.js'
 import { requiredField } from "../composables/validationRules"
 import sucessfullModal from '@/components/sucessfullModal.vue';
 import { useRouter } from 'vue-router';
 const router = useRouter();
-const { postDetails, createPostsByUser, isLoading, sucessModal } = createPostApi()
-const hasErrors = computed(() => {
-    const errorFields = [
-        ...requiredField.map((rule) => rule(postDetails.title)),
-        ...requiredField.map((rule) => rule(postDetails.description)),
-        ...requiredField.map((rule) => rule(postDetails.photo)),
-    ];
+const { postDetails, createPost, isLoading, sucessModal , hasErrors } = createPostApi()
 
-    return errorFields.some((errors) =>
-        Array.isArray(errors) ? errors.length > 0 : !!errors
-    );
-});
 const handleCloseModal = () => {
     sucessModal.value = false
     router.push('/posts');
