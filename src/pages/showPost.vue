@@ -1,15 +1,15 @@
 <template>
-    <div class="container mx-auto max-w-3xl">
+    <div class="container  w-3/5 m-auto text-center ">
         <div class="header text-right p-4">
             <v-btn class="mt-2 pointer mr-2" color="blue" @click="logout">
                 Logout
             </v-btn>
         </div>
 
-        <div v-if="posts && posts.length" class=" flex flex-wrap gap-8 text-center">
+        <div v-if="posts && posts.length" class=" flex flex-wrap gap-8 ml-20">
             <v-infinite-scroll>
                 <div v-for="post in posts" :key="post.id"
-                    class=" bg-white border w-4/5 border-gray-300 rounded-lg overflow-hidden shadow-md">
+                    class="  border w-4/5 border-gray-800 bg-gray-300 rounded-lg mb-5  overflow-hidden shadow-md">
                     <div class=" p-4 flex items-center">
                         <img :src="post.userDetails.profilePhotoPath" alt="Profile Photo"
                             class=" w-10 h-10 rounded-full mr-4" />
