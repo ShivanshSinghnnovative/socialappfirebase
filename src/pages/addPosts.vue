@@ -24,7 +24,8 @@
                                     </v-text-field>
                                 </v-col>
                                 <v-col cols="12" v-if="userListLoaded">
-                                    <v-select v-model="postDetails.taggedUsers" :items="userList" item-value="uid" item-title="firstName" multiple label="Select Users" outlined>
+                                    <v-select v-model="postDetails.taggedUsers" :items="userList" item-value="uid"
+                                        item-title="firstName" multiple chips closable-chips label="Select Users" outlined>
                                     </v-select>
                                 </v-col>
                                 <v-col cols="12">

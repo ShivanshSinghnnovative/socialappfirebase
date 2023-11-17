@@ -31,7 +31,6 @@ export const postStore = (() => {
                 photo: downloadURL,
             }
             const postRef = await addDoc(collection(db, "post"), postData);
-            console.log(postRef.id)
             const taggedUserRef = collection(db, `post/${postRef.id}/taggedUsers`);
             await addDoc(taggedUserRef, { userId: postDetails.taggedUsers });
         }
