@@ -1,11 +1,10 @@
-import {  getStorage } from "firebase/storage";
 import { collection,  getDocs } from "firebase/firestore";
 import { db } from "../firebase.js";
 import { useAuthUserStore } from './auth-user-store.js';
 import { storeToRefs } from 'pinia'
 const store = useAuthUserStore();
 const { userDetails } = storeToRefs(store);
-const storage = getStorage();
+
 
 export const userStore = (() => {
     const getUsersList = async () => {
