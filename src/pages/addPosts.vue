@@ -59,8 +59,8 @@ import { useRouter } from 'vue-router';
 const userListLoaded = ref(false);
 const router = useRouter();
 const { postDetails, createPost, isLoading, sucessModal, hasErrors } = createPostApi()
-import { postStore } from '../store/post-store.js'
-const { getUsersList } = postStore();
+import { userStore } from '../store/user-store.js'
+const { getUsersList } = userStore();
 let userList = [];
 const fetchUsersList = async () => {
     userList = await getUsersList();
