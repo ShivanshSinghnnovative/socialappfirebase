@@ -15,6 +15,18 @@
                 </div>
                 <h2 class=" text-center p-4 text-xl">{{ post.title }}</h2>
                 <img :src="post.photo" alt="Post Photo" class=" w-5/5 m-auto object-cover" />
+                <!-- <div class="text-left p-4" v-html="post.description"></div> -->
+
+
+                <div class="text-left p-4">
+                    <template v-if="!post.showMore">
+                        <p v-html="truncateDescription(post.description, 3)"></p>
+                        <span v-if="post.description.length > 30"> <a @click="toggleShowMore(post.id)" class="text-blue cursor-pointer">Show More</a></span>
+                    </template>
+                    <template v-else>
+                        <p v-html="post.description"></p>
+                    </template>
+                </div>
                 <div @click="toggleTagUser(post.id)" class="text-left ml-3 mb-2 cursor-pointer ">
                     <v-icon aria-hidden="false">
                         mdi-account
@@ -36,6 +48,7 @@
 import { ref, onMounted } from 'vue';
 import { useAuthUserStore } from '../store/auth-user-store.js';
 import { postStore } from '@/store/post-store';
+
 const authUser = useAuthUserStore();
 const { logout } = authUser;
 const userPosts = postStore()
@@ -45,14 +58,28 @@ const posts = ref([]);
 const toggleTagUser = (postId) => {
     tagUsers.value[postId] = !tagUsers.value[postId];
 };
+
 onMounted(async () => {
     try {
         posts.value = await getAllPosts();
-
     } catch (error) {
         console.error(error);
     }
 });
 
+const toggleShowMore = (postId) => {
+    const post = posts.value.find((p) => p.id === postId);
+    if (post) {
+        post.showMore = !post.showMore;
+    }
+};
+
+const truncateDescription = (description, lines) => {
+    const words = description.split(' ');
+    if (words.length <= lines * 10) {
+        return description;
+    }
+    return words.slice(0, lines * 10).join(' ') + '...';
+};
 
 </script>
