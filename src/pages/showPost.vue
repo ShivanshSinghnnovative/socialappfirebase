@@ -24,16 +24,25 @@
                 <div v-else class="text-left p-4 max-h-40 text-xs overflow-auto">
                     <p v-html="post.description"></p>
                 </div>
-                <div @click="toggleTagUser(post.id)" class="text-left ml-3 mb-2  cursor-pointer ">
+                
+                <span @click="toggleTagUser(post.id)" class="text-left ml-3 mb-2  cursor-pointer ">
                     <v-icon aria-hidden="false">
                         mdi-account
                     </v-icon>
-                </div>
-                <div v-if="tagUsers[post.id]" class="mb-3">
+                </span>
+                <div v-if="tagUsers[post.id]" class="mb-3 mt-3">
                     <span v-for="tagUser in post.taggedUsers" :key="tagUser.id" chips class="text-left ml-3  font-light ">
                         <span class="border border-gray-400 p-2 rounded-md bg-black text-white ">{{ tagUser }}</span>
                     </span>
                 </div>
+
+                 <span @click="toggleComment[post.id]" class="text-left ml-3 mb-2  cursor-pointer ">
+                    <v-icon size="large" color="black-darken-2" icon="mdi-message-text"></v-icon>
+                </span>
+                <div v-if="comments[post.id]">
+                    <input type="text" placeholder="add comments">
+                </div>
+                <input type="text" placeholder="add comments">
 
             </div>
         </div>
@@ -59,8 +68,12 @@ const userPosts = postStore()
 const { getAllPosts } = userPosts;
 const tagUsers = ref({});
 const posts = ref([]);
+const comments = ref({});
 const toggleTagUser = (postId) => {
     tagUsers.value[postId] = !tagUsers.value[postId];
+};
+const toggleComment = (postId) => {
+    comments.value[postId] = !comments.value[postId];
 };
 const visiblePostCount = ref(5);
 const totalPosts = ref(0);
