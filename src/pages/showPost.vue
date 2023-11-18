@@ -7,7 +7,7 @@
         </div>
 
         <div v-if="posts && posts.length" class=" flex flex-wrap  justify-center gap-8 ">
-            <div v-for="post in posts" :key="post.id"
+            <div v-for="post in posts.slice(0, visiblePostCount)" :key="post.id"
                 class="  border w-2/5 border-gray-800 bg-gray-300 h-120 rounded-lg mb-5  overflow-hidden shadow-md">
                 <img :src="post.photo" alt="Post Photo" class=" w-full h-80 m-auto  object-cover" />
                 <div class=" p-4 flex items-center h-10 mt-1">
@@ -39,6 +39,12 @@
         <div v-else class="text-center m-auto">
             <v-progress-circular indeterminate></v-progress-circular>
         </div>
+        <div class="text-center m-auto mb-4">
+            <v-btn v-if="visiblePostCount < totalPosts" @click="loadMorePosts" color="blue">
+                Load More
+            </v-btn>
+        </div>
+
     </div>
 </template>
 <script setup>
@@ -55,10 +61,17 @@ const posts = ref([]);
 const toggleTagUser = (postId) => {
     tagUsers.value[postId] = !tagUsers.value[postId];
 };
+const visiblePostCount = ref(5);
+const totalPosts = ref(0);
 
+const loadMorePosts = () => {
+    visiblePostCount.value += 5;
+};
 onMounted(async () => {
     try {
-        posts.value = await getAllPosts();
+        const allPosts = await getAllPosts();
+        posts.value = allPosts;
+        totalPosts.value = allPosts.length;
     } catch (error) {
         console.error(error);
     }
