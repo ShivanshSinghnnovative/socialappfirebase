@@ -7,28 +7,25 @@
         </div>
 
         <div v-if="posts && posts.length" class=" flex flex-wrap gap-8 ml-20">
-            <v-infinite-scroll>
-                <div v-for="post in posts" :key="post.id"
-                    class="  border w-4/5 border-gray-800 bg-gray-300 rounded-lg mb-5  overflow-hidden shadow-md">
-                    <div class=" p-4 flex items-center">
-                        <img :src="post.userDetails.profilePhotoPath" alt="Profile Photo"
-                            class=" w-10 h-10 rounded-full mr-4" />
-                        <h2 class=" text-lg font-bold">{{ post.userDetails.firstName }} {{ post.userDetails.lastName }}</h2>
-                    </div>
-                    <h2 class=" text-center p-4 text-xl">{{ post.title }}</h2>
-                    <img :src="post.photo" alt="Post Photo" class=" w-5/5 m-auto object-cover" />
-                    <div @click="toggleTagUser(post.id)" class="text-left ml-3 mb-2 cursor-pointer ">
-                        <v-icon aria-hidden="false">
-                            mdi-account
-                        </v-icon>
-                    </div>
-                    <div v-if="tagUsers[post.id]">
-                        <div v-for="tagUser in post.taggedUserNames" :key="tagUser.id" class="text-left ml-3 mb-2">
-                            <h2>{{ tagUser }}</h2>
-                        </div>
+            <div v-for="post in posts" :key="post.id"
+                class="  border w-4/5 border-gray-800 bg-gray-300 rounded-lg mb-5  overflow-hidden shadow-md">
+                <div class=" p-4 flex items-center">
+                    <img :src="post.profilePhotoPath" alt="Profile Photo" class=" w-10 h-10 rounded-full mr-4" />
+                    <h2 class=" text-lg font-bold">{{ post.firstName }} {{ post.lastName }}</h2>
+                </div>
+                <h2 class=" text-center p-4 text-xl">{{ post.title }}</h2>
+                <img :src="post.photo" alt="Post Photo" class=" w-5/5 m-auto object-cover" />
+                <div @click="toggleTagUser(post.id)" class="text-left ml-3 mb-2 cursor-pointer ">
+                    <v-icon aria-hidden="false">
+                        mdi-account
+                    </v-icon>
+                </div>
+                <div v-if="tagUsers[post.id]">
+                    <div v-for="tagUser in post.taggedUsers" :key="tagUser.id" class="text-left ml-3 mb-2">
+                        <h2>{{ tagUser }}</h2>
                     </div>
                 </div>
-            </v-infinite-scroll>
+            </div>
         </div>
         <div v-else class="text-center m-auto">
             <v-progress-circular indeterminate></v-progress-circular>
