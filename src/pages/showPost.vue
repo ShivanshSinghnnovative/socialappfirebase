@@ -29,11 +29,12 @@
                         mdi-account
                     </v-icon>
                 </div>
-                <div v-if="tagUsers[post.id]">
-                    <div v-for="tagUser in post.taggedUsers" :key="tagUser.id" class="text-left ml-3">
-                        <h2>{{ tagUser }}</h2>
-                    </div>
+                <div v-if="tagUsers[post.id]" class="mb-3">
+                    <span v-for="tagUser in post.taggedUsers" :key="tagUser.id" chips class="text-left ml-3  font-light ">
+                        <span class="border border-gray-400 p-2 rounded-md bg-black text-white ">{{ tagUser }}</span>
+                    </span>
                 </div>
+
             </div>
         </div>
         <div v-else class="text-center m-auto">
