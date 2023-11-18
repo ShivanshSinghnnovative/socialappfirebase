@@ -8,23 +8,23 @@
 
         <div v-if="posts && posts.length" class=" flex flex-wrap  justify-center gap-8 ">
             <div v-for="post in posts" :key="post.id"
-                class="  border w-2/5 border-gray-800 bg-gray-300 rounded-lg mb-5  overflow-hidden shadow-md">
-                <img :src="post.photo" alt="Post Photo" class=" w-full h-2/5 m-auto  object-cover" />
-                <div class=" p-4 flex items-center h-1/6">
-                    <img :src="post.profilePhotoPath" alt="Profile Photo" class=" w-10 h-10 rounded-full mr-4" />
-                    <h2 class=" text-lg font-bold">{{ post.firstName }} {{ post.lastName }}</h2>
+                class="  border w-2/5 border-gray-800 bg-gray-300 h-120 rounded-lg mb-5  overflow-hidden shadow-md">
+                <img :src="post.photo" alt="Post Photo" class=" w-full h-80 m-auto  object-cover" />
+                <div class=" p-4 flex items-center h-10 mt-1">
+                    <img :src="post.profilePhotoPath" alt="Profile Photo" class=" w-8 h-8 rounded-full mr-4" />
+                    <h2 class=" text-sm font-bold">{{ post.firstName }} {{ post.lastName }}</h2>
                 </div>
                 <h2 class=" text-left font-bold p-4 text-xl">{{ post.title }}</h2>
-                <div v-if="!post.showMore" class="text-left p-4 max-h-40 overflow-hidden">
+                <div v-if="!post.showMore" class="text-left p-4 h-30 text-xs overflow-hidden">
                     <p v-html="truncateDescription(post.description, 3)"></p>
                     <span v-if="post.description.length > 30">
                         <a @click="toggleShowMore(post.id)" class="text-blue cursor-pointer">Show More</a>
                     </span>
                 </div>
-                <div v-else class="text-left p-4 max-h-40 overflow-auto">
+                <div v-else class="text-left p-4 max-h-40 text-xs overflow-auto">
                     <p v-html="post.description"></p>
                 </div>
-                <div @click="toggleTagUser(post.id)" class="text-left ml-3 mb-2 cursor-pointer ">
+                <div @click="toggleTagUser(post.id)" class="text-left ml-3 mb-2  cursor-pointer ">
                     <v-icon aria-hidden="false">
                         mdi-account
                     </v-icon>
