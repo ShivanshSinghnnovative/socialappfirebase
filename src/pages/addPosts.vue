@@ -19,8 +19,9 @@
                                     </v-file-input>
                                 </v-col>
                                 <v-col cols="12">
-                                    <ckeditor v-model="postDetails.description" :editor="editor" :config="editorConfig"></ckeditor>
-                                  </v-col>
+                                    <ckeditor v-model="postDetails.description" :editor="editor" :config="editorConfig">
+                                    </ckeditor>
+                                </v-col>
                                 <v-col cols="12" v-if="userListLoaded">
                                     <v-select v-model="postDetails.taggedUsers" :items="userList" item-value="firstName"
                                         item-title="firstName" multiple chips closable-chips label="Select Users" outlined>
@@ -59,8 +60,8 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 const editor = ref(ClassicEditor);
 const editorConfig = ref({
-  toolbar: ['bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote'],
-  language: 'en',
+    toolbar: ['bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote'],
+    language: 'en',
 });
 
 const userListLoaded = ref(false);

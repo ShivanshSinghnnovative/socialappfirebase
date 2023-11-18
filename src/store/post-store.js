@@ -1,5 +1,5 @@
 import { ref, uploadBytes, getStorage, getDownloadURL } from "firebase/storage";
-import { collection, addDoc, getDocs, query, doc, where } from "firebase/firestore";
+import { collection, addDoc, getDocs, query, doc, where, orderBy } from "firebase/firestore";
 import { db } from "../firebase.js";
 import slugify from 'slugify';
 import { useAuthUserStore } from './auth-user-store.js';
@@ -16,7 +16,7 @@ export const postStore = (() => {
                 lower: true,
                 strict: true,
             });
-            const timestamp = new Date().toISOString();
+            const timestamp = new Date().toISOString();;
             const createdBy = userDetails.value.uid;
             const storageRef = ref(storage, `post/${createdBy}/postphotos${timestamp}`);
             await uploadBytes(storageRef, postDetails.photo[0]);
@@ -46,7 +46,7 @@ export const postStore = (() => {
     const getAllPosts = async () => {
         try {
             let posts = []
-            const querySnapshot = await getDocs(query(collection(db, "post")));
+            const querySnapshot = await getDocs(query(collection(db, "post"), orderBy("createdAt", "desc")));
             if (!querySnapshot.empty) {
                 for (const doc of querySnapshot.docs) {
                     const post = { ...doc.data(), id: doc.id };

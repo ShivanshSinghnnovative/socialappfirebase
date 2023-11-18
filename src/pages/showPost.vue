@@ -15,13 +15,11 @@
                 </div>
                 <h2 class=" text-center p-4 text-xl">{{ post.title }}</h2>
                 <img :src="post.photo" alt="Post Photo" class=" w-5/5 m-auto object-cover" />
-                <!-- <div class="text-left p-4" v-html="post.description"></div> -->
-
-
                 <div class="text-left p-4">
                     <template v-if="!post.showMore">
                         <p v-html="truncateDescription(post.description, 3)"></p>
-                        <span v-if="post.description.length > 30"> <a @click="toggleShowMore(post.id)" class="text-blue cursor-pointer">Show More</a></span>
+                        <span v-if="post.description.length > 30"> <a @click="toggleShowMore(post.id)"
+                                class="text-blue cursor-pointer">Show More</a></span>
                     </template>
                     <template v-else>
                         <p v-html="post.description"></p>
