@@ -9,6 +9,8 @@
     "lint": "eslint . --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "@ckeditor/ckeditor5-build-classic": "^40.1.0",
+    "@ckeditor/ckeditor5-vue": "^5.1.0",
     "@mdi/font": "7.0.96",
     "core-js": "^3.29.0",
     "firebase": "^10.5.2",

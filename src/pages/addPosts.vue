@@ -19,12 +19,11 @@
                                     </v-file-input>
                                 </v-col>
                                 <v-col cols="12">
-                                    <v-text-field v-model="postDetails.description" :rules="requiredField"
-                                        label="Description" outlined>
-                                    </v-text-field>
+                                    <ckeditor v-model="postDetails.description" :editor="editor" :config="editorConfig">
+                                    </ckeditor>
                                 </v-col>
                                 <v-col cols="12" v-if="userListLoaded">
-                                    <v-select v-model="postDetails.taggedUsers" :items="userList" item-value="uid"
+                                    <v-select v-model="postDetails.taggedUsers" :items="userList" item-value="firstName"
                                         item-title="firstName" multiple chips closable-chips label="Select Users" outlined>
                                     </v-select>
                                 </v-col>
@@ -56,6 +55,15 @@ import { ref } from 'vue';
 import sucessfullModal from '@/components/sucessfullModal.vue';
 import { onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
+import CKEditor from '@ckeditor/ckeditor5-vue';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+
+const editor = ref(ClassicEditor);
+const editorConfig = ref({
+    toolbar: ['bold', 'italic', 'link', 'bulletedList', 'numberedList', 'blockQuote'],
+    language: 'en',
+});
+
 const userListLoaded = ref(false);
 const router = useRouter();
 const { postDetails, createPost, isLoading, sucessModal, hasErrors } = createPostApi()
@@ -78,4 +86,7 @@ const handleCloseModal = () => {
 };
 
 </script>
+
+
+
 

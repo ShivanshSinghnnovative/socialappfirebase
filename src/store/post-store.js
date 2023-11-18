@@ -1,5 +1,5 @@
 import { ref, uploadBytes, getStorage, getDownloadURL } from "firebase/storage";
-import { collection, addDoc} from "firebase/firestore";
+import { collection, addDoc, getDocs, query, doc, where, orderBy } from "firebase/firestore";
 import { db } from "../firebase.js";
 import slugify from 'slugify';
 import { useAuthUserStore } from './auth-user-store.js';
@@ -16,11 +16,12 @@ export const postStore = (() => {
                 lower: true,
                 strict: true,
             });
-            const timestamp = new Date().toISOString();
+            const timestamp = new Date().toISOString();;
             const createdBy = userDetails.value.uid;
             const storageRef = ref(storage, `post/${createdBy}/postphotos${timestamp}`);
             await uploadBytes(storageRef, postDetails.photo[0]);
             const downloadURL = await getDownloadURL(storageRef);
+            const taggedUserNames = postDetails.taggedUsers;
             const postData = {
                 title: postDetails.title,
                 description: postDetails.description,
@@ -29,16 +30,35 @@ export const postStore = (() => {
                 updatedAt: timestamp,
                 updatedBy: createdBy,
                 photo: downloadURL,
+                firstName: userDetails.value.firstName,
+                lastName: userDetails.value.lastName,
+                profilePhotoPath: userDetails.value.profilePhotoPath,
+                taggedUsers: taggedUserNames,
             }
             const postRef = await addDoc(collection(db, "post"), postData);
-            const taggedUserRef = collection(db, `post/${postRef.id}/taggedUsers`);
-            await addDoc(taggedUserRef, { userId: postDetails.taggedUsers });
         }
         catch (error) {
             console.log(error)
         }
 
     };
-  
-    return { addPost };
+
+    const getAllPosts = async () => {
+        try {
+            let posts = []
+            const querySnapshot = await getDocs(query(collection(db, "post"), orderBy("createdAt", "desc")));
+            if (!querySnapshot.empty) {
+                for (const doc of querySnapshot.docs) {
+                    const post = { ...doc.data(), id: doc.id };
+                    posts.push(post);
+                }
+                return posts;
+            } else {
+                console.error("not found ");
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    return { addPost, getAllPosts };
 });
