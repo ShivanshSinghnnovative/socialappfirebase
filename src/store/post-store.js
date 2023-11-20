@@ -1,5 +1,5 @@
 import { ref, uploadBytes, getStorage, getDownloadURL } from "firebase/storage";
-import { collection, addDoc, getDocs, query, doc, where, orderBy } from "firebase/firestore";
+import { collection, addDoc, getDocs, query, doc, setDoc, where, orderBy, deleteDoc } from "firebase/firestore";
 import { db } from "../firebase.js";
 import slugify from 'slugify';
 import { useAuthUserStore } from './auth-user-store.js';
@@ -42,10 +42,10 @@ export const postStore = (() => {
         }
 
     };
-
+    let posts = []
     const getAllPosts = async () => {
         try {
-            let posts = []
+            posts = []
             const querySnapshot = await getDocs(query(collection(db, "post"), orderBy("createdAt", "desc")));
             if (!querySnapshot.empty) {
                 for (const doc of querySnapshot.docs) {
@@ -60,5 +60,66 @@ export const postStore = (() => {
             console.log(error)
         }
     }
-    return { addPost, getAllPosts };
+    const postComment = async (commentText, postId) => {
+        try {
+            const commentTitle = commentText;
+            console
+            if (commentTitle.trim() !== '') {
+                const timestamp = new Date().toISOString();
+                const commentData = {
+                    commentTitle,
+                    userId: userDetails.value.uid,
+                    firstName: userDetails.value.firstName,
+                    profilePhotoPath: userDetails.value.profilePhotoPath,
+                    createdAt: timestamp,
+                    updatedAt: timestamp,
+                };
+                const commentsRef = collection(db, `post/${postId}/comment`);
+                await addDoc(commentsRef, commentData);
+
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+    const getCommentsForPost = async (postId) => {
+        try {
+            const comments = [];
+            const commentsSnapshot = await getDocs(query(collection(db, `post/${postId}/comment`), orderBy("createdAt", "desc")));
+            commentsSnapshot.forEach((commentDoc) => {
+                const comment = { ...commentDoc.data(), id: commentDoc.id };
+                comments.push(comment);
+            });
+            return comments;
+        } catch (error) {
+            console.error(error);
+        }
+    };
+    const updateComment = async (createdAt, updatedComment, postId) => {
+        try {
+            const userDetailsCollection = collection(db, `post/${postId}/comment`);
+            const querySnapshot = await getDocs(query(userDetailsCollection, where("createdAt", "==", createdAt)));
+            if (!querySnapshot.empty) {
+                const userDocRef = querySnapshot.docs[0].ref;
+                await setDoc(userDocRef, updatedComment, { merge: true });
+                console.log("Comment updated successfully");
+            } else {
+                console.error("User comment not found");
+            }
+        } catch (error) {
+            console.error("Error updating user details:", error);
+        }
+    };
+
+    const deleteComment = async (commentId, postId) => {
+        try {
+            const commentsRef = collection(db, `post/${postId}/comment`);
+            const commentDocRef = doc(commentsRef, commentId);
+            await deleteDoc(commentDocRef);
+            console.log("Comment deleted successfully");
+        } catch (error) {
+            console.error("Error deleting comment:", error);
+        }
+    };
+    return { addPost, getAllPosts, postComment, getCommentsForPost, updateComment, deleteComment };
 });
