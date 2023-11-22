@@ -38,7 +38,6 @@
 
                 <span @click="toggleComment(post.id)" class="text-left ml-3 mb-2  cursor-pointer ">
                     <v-icon size="large" color="black-darken-2" icon="mdi-message-text"></v-icon>
-`
                 </span>
 
                 <div v-if="openComments[post.id]" class="p-3">
@@ -50,14 +49,14 @@
                                 <h3 class="text-sm font-bold mr-2">{{ commentDetails.firstName }}</h3>
                                 <p class="text-xs ml-3 text-gray-800 break-all">{{ commentDetails.commentTitle }}</p>
                                 <div class="flex right-2 text-xs gap-1  absolute   ">
-                                    <v-icon v-if="userDetails && (commentDetails.userId === userDetails.uid)" 
+                                    <v-icon v-if="userDetails && (commentDetails.userId === userDetails.uid)"
                                         @click="editComment(post.id, commentDetails.id, commentDetails.createdAt)"
                                         aria-hidden="false">
                                         mdi-pencil
                                     </v-icon>
                                     <v-icon
                                         v-if="userDetails && (commentDetails.userId === userDetails.uid || userDetails.uid === post.updatedBy)"
-                                        @click="handeldeleteComment(commentDetails.id, post.id)" aria-hidden="false">
+                                        @click="openDeleteModal(commentDetails.id, post.id)" aria-hidden="false">
                                         mdi-delete
                                     </v-icon>
                                 </div>
@@ -73,9 +72,14 @@
                         {{ (comment[post.id] && editableCommentId[post.id] ? 'Update comment' : 'Post comment') }}
                     </v-btn>
                 </div>
-
+                <div v-if="deleteModal" class="fixed">
+                    <confirmDelete :content="'Are you sure to delete this comment'" @deleteModal="handeldeleteComment()"
+                        @closeModal="closePopUp()" />
+                </div>
             </div>
+
         </div>
+
         <div v-else class="text-center m-auto">
             <v-progress-circular indeterminate></v-progress-circular>
         </div>
@@ -92,16 +96,18 @@ import { ref, onMounted } from 'vue';
 import { useAuthUserStore } from '../store/auth-user-store.js';
 import { postStore } from '@/store/post-store';
 import { storeToRefs } from 'pinia';
+import confirmDelete from '../components/confirmationDeleteModal.vue'
 
 const authUser = useAuthUserStore();
 const { userDetails } = storeToRefs(authUser);
 const allcomments = ref({});
+const deleteModal = ref(false);
 const totalPosts = ref(0);
 const visiblePostCount = ref(5);
 const { logout } = authUser;
 const userPosts = postStore()
 const comment = ref({})
-const { getAllPosts, addCommentOnPost , getCommentsForPost, updateComment, deleteComment } = userPosts;
+const { getAllPosts, addCommentOnPost, getCommentsForPost, updateComment, deleteComment } = userPosts;
 const tagUsers = ref({});
 const posts = ref([]);
 const openComments = ref({});
@@ -171,12 +177,25 @@ const handelupdateComment = async (updateExistingComment, postId) => {
     allcomments.value[postId] = await getCommentsForPost(postId);
 
 }
-const handeldeleteComment = async (postCommentId, postId) => {
-    await deleteComment(postCommentId, postId);
-    allcomments.value[postId] = await getCommentsForPost(postId);
+const selectedCommentToDeleteId = ref({});
+const selectedCommentPostId = ref({});
+const handeldeleteComment = async () => {
+    console.log(selectedCommentPostId.value, selectedCommentToDeleteId.value)
+    await deleteComment(selectedCommentToDeleteId.value, selectedCommentPostId.value);
+    allcomments.value[selectedCommentPostId.value] = await getCommentsForPost(selectedCommentPostId.value);
+    deleteModal.value = false;
+}
+
+const openDeleteModal = (updateExistingCommentID, postId) => {
+    selectedCommentToDeleteId.value = updateExistingCommentID;
+    selectedCommentPostId.value = postId;
+    deleteModal.value = true;
 }
 
 const loadMorePosts = () => {
     visiblePostCount.value += 5;
 };
+const closePopUp = () => {
+    deleteModal.value = false;
+}
 </script>
