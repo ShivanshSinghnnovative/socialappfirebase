@@ -44,22 +44,8 @@
                     <div class="max-h-20 overflow-auto w-4/5">
                         <div v-for="commentDetails in allcomments[post.id]" :key="commentDetails.id"
                             class="mb-3 bg-white  border-black rounded-lg">
-                            <div class="flex relative items-center">
-                                <img :src="commentDetails.profilePhotoPath" class="w-6 h-6 p-1 rounded-full mr-2 ml-2">
-                                <h3 class="text-sm font-bold mr-2">{{ commentDetails.firstName }}</h3>
-                                <p class="text-xs ml-3 text-gray-800 break-all">{{ commentDetails.commentTitle }}</p>
-                                <div class="flex right-2 text-xs gap-1  absolute   ">
-                                    <v-icon v-if="userDetails && (commentDetails.userId === userDetails.uid)"
-                                        @click="editComment(post.id, commentDetails.id)" aria-hidden="false">
-                                        mdi-pencil
-                                    </v-icon>
-                                    <v-icon
-                                        v-if="userDetails && (commentDetails.userId === userDetails.uid || userDetails.uid === post.updatedBy)"
-                                        @click="openDeleteModal(commentDetails.id, post.id)" aria-hidden="false">
-                                        mdi-delete
-                                    </v-icon>
-                                </div>
-                            </div>
+                          <commentsonPosts :commentDetails="commentDetails"  @editComment="editComment(post.id, commentDetails.id)" @opendelete="openDeleteModal(commentDetails.id, post.id)"/>
+                      
                         </div>
                     </div>
                     <input v-model="comment[post.id]"
@@ -98,6 +84,7 @@ import { ref, onMounted } from 'vue';
 import { useAuthUserStore } from '../store/auth-user-store.js';
 import { postStore } from '@/store/post-store';
 import { storeToRefs } from 'pinia';
+import commentsonPosts  from '../components/showAllcomments.vue'
 import confirmDelete from '../components/confirmationDeleteModal.vue'
 import { useRouter } from 'vue-router';
 const router = useRouter();

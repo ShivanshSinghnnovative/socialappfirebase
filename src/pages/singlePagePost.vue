@@ -27,22 +27,7 @@
                 <div class=" w-4/5">
                     <div v-for="commentDetails in allcomments" :key="commentDetails.id"
                         class="mb-3 bg-white  border-black rounded-lg">
-                        <div class="flex relative items-center">
-                            <img :src="commentDetails.profilePhotoPath" class="w-6 h-6 p-1 rounded-full mr-2 ml-2">
-                            <h3 class="text-sm font-bold mr-2">{{ commentDetails.firstName }}</h3>
-                            <p class=" ml-3 text-gray-800 p-2 break-all">{{ commentDetails.commentTitle }}</p>
-                            <div class="flex right-2 p-2 gap-1  absolute   ">
-                                <v-icon v-if="userDetails && (commentDetails.userId === userDetails.uid)"
-                                    @click="editComment(post.id, commentDetails.id)" aria-hidden="false">
-                                    mdi-pencil
-                                </v-icon>
-                                <v-icon
-                                    v-if="userDetails && (commentDetails.userId === userDetails.uid || userDetails.uid === post.updatedBy)"
-                                    @click="openDeleteModal(commentDetails.id, post.id)" aria-hidden="false">
-                                    mdi-delete
-                                </v-icon>
-                            </div>
-                        </div>
+                        <commentsonPosts :commentDetails="commentDetails" @editComment="editComment(post.id, commentDetails.id)"  @opendelete="openDeleteModal(commentDetails.id, post.id)"/>
                     </div>
                 </div>
                 <input v-model="comment"
@@ -67,6 +52,7 @@
 
 <script setup>
 import { useRoute, useRouter } from 'vue-router';
+import commentsonPosts  from '../components/showAllcomments.vue'
 import { ref, onMounted } from 'vue';
 import { postStore } from '@/store/post-store';
 import { storeToRefs } from 'pinia';
