@@ -60,9 +60,8 @@ export const postStore = (() => {
             console.log(error)
         }
     }
-    const addCommentOnPost = async (commentText, postId) => {
+    const addCommentOnPost = async (commentTitle, postId) => {
         try {
-            const commentTitle = commentText;
             if (commentTitle.trim() !== '') {
                 const timestamp = new Date().toISOString();
                 const commentData = {
