@@ -38,26 +38,26 @@
 
                 <span @click="toggleComment(post.id)" class="text-left ml-3 mb-2  cursor-pointer ">
                     <v-icon size="large" color="black-darken-2" icon="mdi-message-text"></v-icon>
-
+`
                 </span>
 
-                <div v-if="comments[post.id]" class="p-3">
+                <div v-if="openComments[post.id]" class="p-3">
                     <div class="max-h-20 overflow-auto w-4/5">
-                        <div v-for="postComment in allcomments[post.id]" :key="postComment.id"
+                        <div v-for="commentDetails in allcomments[post.id]" :key="commentDetails.id"
                             class="mb-3 bg-white  border-black rounded-lg">
-                            <div class="flex items-center">
-                                <img :src="postComment.profilePhotoPath" class="w-6 h-6 p-1 rounded-full mr-2 ml-2">
-                                <h3 class="text-sm font-bold mr-2">{{ postComment.firstName }}</h3>
-                                <p class="text-xs ml-3 text-gray-800 break-all">{{ postComment.commentTitle }}</p>
-                                <div class="text-right">
-                                    <v-icon v-if="userDetails && (postComment.userId === userDetails.uid)"
-                                        @click="editComment(post.id, postComment.id, postComment.createdAt)"
+                            <div class="flex relative items-center">
+                                <img :src="commentDetails.profilePhotoPath" class="w-6 h-6 p-1 rounded-full mr-2 ml-2">
+                                <h3 class="text-sm font-bold mr-2">{{ commentDetails.firstName }}</h3>
+                                <p class="text-xs ml-3 text-gray-800 break-all">{{ commentDetails.commentTitle }}</p>
+                                <div class="flex right-2 text-xs gap-1  absolute   ">
+                                    <v-icon v-if="userDetails && (commentDetails.userId === userDetails.uid)" 
+                                        @click="editComment(post.id, commentDetails.id, commentDetails.createdAt)"
                                         aria-hidden="false">
                                         mdi-pencil
                                     </v-icon>
                                     <v-icon
-                                        v-if="userDetails && (postComment.userId === userDetails.uid || userDetails.uid === post.updatedBy)"
-                                        @click="handeldeleteComment(postComment.id, post.id)" aria-hidden="false">
+                                        v-if="userDetails && (commentDetails.userId === userDetails.uid || userDetails.uid === post.updatedBy)"
+                                        @click="handeldeleteComment(commentDetails.id, post.id)" aria-hidden="false">
                                         mdi-delete
                                     </v-icon>
                                 </div>
@@ -65,11 +65,11 @@
                         </div>
                     </div>
                     <input v-model="comment[post.id]"
-                        class="border break-all border-gray-300 text-gray-800 text-sm rounded-lg mt-1  block w-4/5 p-2.5 bg-blue-200 "
+                        class="border break-all border-gray-300 text-gray-800 text-xs rounded-lg mt-1  block w-4/5 p-1.5 bg-blue-200 "
                         type="text" placeholder="add comments">
                     <v-btn
-                        @click=" (comment[post.id] && editableCommentId[post.id] ? handelupdateComment(comment[post.id], post.id) : postCommentHandle(post.id))"
-                        class="w-fit-content mt-2" color="blue">
+                        @click=" (comment[post.id] && editableCommentId[post.id] ? handelupdateComment(comment[post.id], post.id) : addCommentsInPost(post.id))"
+                        class="p-1 text-xs mt-1" color="blue">
                         {{ (comment[post.id] && editableCommentId[post.id] ? 'Update comment' : 'Post comment') }}
                     </v-btn>
                 </div>
@@ -101,10 +101,10 @@ const visiblePostCount = ref(5);
 const { logout } = authUser;
 const userPosts = postStore()
 const comment = ref({})
-const { getAllPosts, postComment, getCommentsForPost, updateComment, deleteComment } = userPosts;
+const { getAllPosts, addCommentOnPost , getCommentsForPost, updateComment, deleteComment } = userPosts;
 const tagUsers = ref({});
 const posts = ref([]);
-const comments = ref({});
+const openComments = ref({});
 const commentsToEdit = ref({})
 const editableCommentId = ref({});
 
@@ -140,14 +140,14 @@ const truncateDescription = (description, lines) => {
 };
 
 const toggleComment = async (postId) => {
-    comments.value[postId] = !comments.value[postId];
+    openComments.value[postId] = !openComments.value[postId];
     comment.value[postId] = '';
     allcomments.value[postId] = await getCommentsForPost(postId);
     editableCommentId.value[postId] = null;
 };
-const postCommentHandle = async (postId) => {
+const addCommentsInPost = async (postId) => {
     if (userDetails && comment.value[postId]) {
-        postComment(comment.value[postId], postId)
+        addCommentOnPost(comment.value[postId], postId)
         comment.value[postId] = null
         allcomments.value[postId] = await getCommentsForPost(postId);
     }
@@ -163,7 +163,7 @@ const editComment = (postId, commentId, createdAt) => {
 const handelupdateComment = async (updateExistingComment, postId) => {
     const updatedComment = {
         updatedAt: new Date().toISOString(),
-        commentTitle: updateExistingComment
+        commentTitle: updateExistingComment.trim()
     };
     await updateComment(commentsToEdit.value[postId], updatedComment, postId);
     comment.value[postId] = null

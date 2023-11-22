@@ -42,8 +42,8 @@ export const postStore = (() => {
         }
 
     };
-    let posts = []
     const getAllPosts = async () => {
+        let posts = []
         try {
             posts = []
             const querySnapshot = await getDocs(query(collection(db, "post"), orderBy("createdAt", "desc")));
@@ -60,10 +60,9 @@ export const postStore = (() => {
             console.log(error)
         }
     }
-    const postComment = async (commentText, postId) => {
+    const addCommentOnPost = async (commentText, postId) => {
         try {
             const commentTitle = commentText;
-            console
             if (commentTitle.trim() !== '') {
                 const timestamp = new Date().toISOString();
                 const commentData = {
@@ -102,9 +101,6 @@ export const postStore = (() => {
             if (!querySnapshot.empty) {
                 const userDocRef = querySnapshot.docs[0].ref;
                 await setDoc(userDocRef, updatedComment, { merge: true });
-                console.log("Comment updated successfully");
-            } else {
-                console.error("User comment not found");
             }
         } catch (error) {
             console.error("Error updating user details:", error);
@@ -116,10 +112,9 @@ export const postStore = (() => {
             const commentsRef = collection(db, `post/${postId}/comment`);
             const commentDocRef = doc(commentsRef, commentId);
             await deleteDoc(commentDocRef);
-            console.log("Comment deleted successfully");
         } catch (error) {
             console.error("Error deleting comment:", error);
         }
     };
-    return { addPost, getAllPosts, postComment, getCommentsForPost, updateComment, deleteComment };
+    return { addPost, getAllPosts, addCommentOnPost, getCommentsForPost, updateComment, deleteComment };
 });
