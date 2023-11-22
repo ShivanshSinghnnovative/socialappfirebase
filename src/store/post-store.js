@@ -1,5 +1,5 @@
 import { ref, uploadBytes, getStorage, getDownloadURL } from "firebase/storage";
-import { collection, addDoc, getDocs, query, doc, setDoc, where, orderBy, deleteDoc } from "firebase/firestore";
+import { collection, addDoc, getDocs, query, doc, setDoc, getDoc, where, orderBy, deleteDoc } from "firebase/firestore";
 import { db } from "../firebase.js";
 import slugify from 'slugify';
 import { useAuthUserStore } from './auth-user-store.js';
@@ -16,7 +16,7 @@ export const postStore = (() => {
                 lower: true,
                 strict: true,
             });
-            const timestamp = new Date().toISOString();;
+            const timestamp = new Date().toISOString();
             const createdBy = userDetails.value.uid;
             const storageRef = ref(storage, `post/${createdBy}/postphotos${timestamp}`);
             await uploadBytes(storageRef, postDetails.photo[0]);
@@ -98,7 +98,7 @@ export const postStore = (() => {
             const commentDocRef = doc(db, `post/${postId}/comment`, commentId);
             await setDoc(commentDocRef, updatedComment, { merge: true });
         } catch (error) {
-            console.error("Error updating user details:", error);
+            console.error("Error updating user comment:", error);
         }
     };
 
@@ -111,5 +111,22 @@ export const postStore = (() => {
             console.error("Error deleting comment:", error);
         }
     };
-    return { addPost, getAllPosts, addCommentOnPost, getCommentsForPost, updateComment, deleteComment };
+
+    const getPost = async (postId) => {
+        let post = {};
+        try {
+            const postDocRef = doc(db, "post", postId);
+            const postDocSnapshot = await getDoc(postDocRef);
+            if (postDocSnapshot.exists()) {
+                post = { ...postDocSnapshot.data(), id: postId };
+            }
+            return post;
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+
+
+    return { addPost, getAllPosts, addCommentOnPost, getCommentsForPost, updateComment, deleteComment, getPost };
 });

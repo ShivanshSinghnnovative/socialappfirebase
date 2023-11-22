@@ -50,8 +50,7 @@
                                 <p class="text-xs ml-3 text-gray-800 break-all">{{ commentDetails.commentTitle }}</p>
                                 <div class="flex right-2 text-xs gap-1  absolute   ">
                                     <v-icon v-if="userDetails && (commentDetails.userId === userDetails.uid)"
-                                        @click="editComment(post.id, commentDetails.id)"
-                                        aria-hidden="false">
+                                        @click="editComment(post.id, commentDetails.id)" aria-hidden="false">
                                         mdi-pencil
                                     </v-icon>
                                     <v-icon
@@ -72,6 +71,9 @@
                         {{ (comment[post.id] && editableCommentId[post.id] ? 'Update comment' : 'Post comment') }}
                     </v-btn>
                 </div>
+                <span class="ml-3 cursor-pointer" @click="openSinglePagePost(post.id)">
+                    <v-icon size="large" color="black-darken-2" icon="mdi-arrow-right-bold-box-outline"></v-icon>
+                </span>
                 <div v-if="deleteModal" class="fixed">
                     <confirmDelete :content="'Are you sure to delete this comment'" @deleteModal="handeldeleteComment()"
                         @closeModal="closePopUp()" />
@@ -97,7 +99,8 @@ import { useAuthUserStore } from '../store/auth-user-store.js';
 import { postStore } from '@/store/post-store';
 import { storeToRefs } from 'pinia';
 import confirmDelete from '../components/confirmationDeleteModal.vue'
-
+import { useRouter } from 'vue-router';
+const router = useRouter();
 const authUser = useAuthUserStore();
 const { userDetails } = storeToRefs(authUser);
 const allcomments = ref({});
@@ -160,11 +163,13 @@ const addCommentsInPost = async (postId) => {
 }
 const editComment = (postId, commentId) => {
     editableCommentId.value[postId] = commentId;
-    // console.log(editableCommentId.value, postId)
     comment.value[postId] = allcomments.value[postId].find(comment => comment.id === commentId).commentTitle;
-    commentsToEdit.value[postId] = commentId ;
+    commentsToEdit.value[postId] = commentId;
 
 };
+const openSinglePagePost = (postId) => {
+    router.push(`/post/${postId}`)
+}
 
 const handelupdateComment = async (updateExistingComment, postId) => {
     const updatedComment = {
@@ -180,7 +185,6 @@ const handelupdateComment = async (updateExistingComment, postId) => {
 const selectedCommentToDeleteId = ref({});
 const selectedCommentPostId = ref({});
 const handeldeleteComment = async () => {
-    console.log(selectedCommentPostId.value, selectedCommentToDeleteId.value)
     await deleteComment(selectedCommentToDeleteId.value, selectedCommentPostId.value);
     allcomments.value[selectedCommentPostId.value] = await getCommentsForPost(selectedCommentPostId.value);
     deleteModal.value = false;
