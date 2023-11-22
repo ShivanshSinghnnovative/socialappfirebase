@@ -93,14 +93,10 @@ export const postStore = (() => {
             console.error(error);
         }
     };
-    const updateComment = async (createdAt, updatedComment, postId) => {
+    const updateComment = async (commentId, updatedComment, postId) => {
         try {
-            const userDetailsCollection = collection(db, `post/${postId}/comment`);
-            const querySnapshot = await getDocs(query(userDetailsCollection, where("createdAt", "==", createdAt)));
-            if (!querySnapshot.empty) {
-                const userDocRef = querySnapshot.docs[0].ref;
-                await setDoc(userDocRef, updatedComment, { merge: true });
-            }
+            const commentDocRef = doc(db, `post/${postId}/comment`, commentId);
+            await setDoc(commentDocRef, updatedComment, { merge: true });
         } catch (error) {
             console.error("Error updating user details:", error);
         }

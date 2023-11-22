@@ -50,7 +50,7 @@
                                 <p class="text-xs ml-3 text-gray-800 break-all">{{ commentDetails.commentTitle }}</p>
                                 <div class="flex right-2 text-xs gap-1  absolute   ">
                                     <v-icon v-if="userDetails && (commentDetails.userId === userDetails.uid)"
-                                        @click="editComment(post.id, commentDetails.id, commentDetails.createdAt)"
+                                        @click="editComment(post.id, commentDetails.id)"
                                         aria-hidden="false">
                                         mdi-pencil
                                     </v-icon>
@@ -158,11 +158,11 @@ const addCommentsInPost = async (postId) => {
         allcomments.value[postId] = await getCommentsForPost(postId);
     }
 }
-const editComment = (postId, commentId, createdAt) => {
+const editComment = (postId, commentId) => {
     editableCommentId.value[postId] = commentId;
-    console.log(editableCommentId.value, postId)
+    // console.log(editableCommentId.value, postId)
     comment.value[postId] = allcomments.value[postId].find(comment => comment.id === commentId).commentTitle;
-    commentsToEdit.value[postId] = createdAt
+    commentsToEdit.value[postId] = commentId ;
 
 };
 
