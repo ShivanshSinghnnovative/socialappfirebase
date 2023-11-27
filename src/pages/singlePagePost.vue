@@ -19,15 +19,13 @@
             <img :src="post.photo" alt="Post Photo" class=" w-full  m-auto  mt-5 object-cover" />
             <p class=" ml-15 mr-15 text-xs mt-10 " v-html="post.description"></p>
             <div class="mb-3 mt-6 ml-15">
-                <span v-for="tagUser in post.taggedUsers" :key="tagUser.id" chips class="text-left ml-3  font-light ">
-                    <span class="border border-gray-400 p-2 rounded-md bg-black text-white ">{{ tagUser }}</span>
-                </span>
+                <tagUserList :taggedUsersList="post.taggedUsers"/>
             </div>
             <div class="p-3 ml-15">
                 <div class=" w-4/5">
                     <div v-for="commentDetails in allcomments" :key="commentDetails.id"
                         class="mb-3 bg-white  border-black rounded-lg">
-                        <commentsonPost :commentDetails="commentDetails" @editComment="editComment( commentDetails.id)"  @opendelete="openDeleteModal(commentDetails.id, post.id)"/>
+                        <commentsonPost :commentDetails="commentDetails" :updatedBy="post.updatedBy" @editComment="editComment( commentDetails.id)"  @opendelete="openDeleteModal(commentDetails.id, post.id)"/>
                     </div>
                 </div>
                 <input v-model="comment"
@@ -58,6 +56,7 @@ import { postStore } from '@/store/post-store';
 import { storeToRefs } from 'pinia';
 import confirmDelete from '../components/confirmationDeleteModal.vue'
 import { useAuthUserStore } from '../store/auth-user-store.js';
+import tagUserList from '../components/taggedUsersList.vue';
 const router = useRouter();
 const authUser = useAuthUserStore();
 const { userDetails } = storeToRefs(authUser);
@@ -101,7 +100,6 @@ const handelupdateComment = async (updateExistingComment, postId) => {
         updatedAt: new Date().toISOString(),
         commentTitle: updateExistingComment.trim()
     };
-    console.log(updateExistingComment, postId)
     await updateComment(commentsToEdit.value, updatedComment, postId);
     comment.value = null
     editableCommentId.value = null;

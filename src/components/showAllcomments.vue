@@ -9,7 +9,7 @@
                 mdi-pencil
             </v-icon>
             <v-icon
-                v-if="userDetails && (commentDetails.userId === userDetails.uid || userDetails.uid === post.updatedBy)"
+                v-if="userDetails && (commentDetails.userId === userDetails.uid || userDetails.uid === updatedBy)"
                 @click="openDelete" aria-hidden="false">
                 mdi-delete
             </v-icon>
@@ -23,7 +23,7 @@ import { useAuthUserStore } from '../store/auth-user-store.js';
 import { defineEmits , defineProps } from 'vue'
 const store = useAuthUserStore();
 const { userDetails } = storeToRefs(store);
-const props = defineProps(['commentDetails' , 'postId']);
+const props = defineProps(['commentDetails' , 'updatedBy']);
 const emit = defineEmits();
 
 const editComment = () => {

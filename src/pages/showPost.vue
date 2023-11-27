@@ -31,9 +31,6 @@
                     </v-icon>
                 </span>
                 <div v-if="tagUsers[post.id]" class="mb-3 mt-3">
-                    <!-- <span v-for="tagUser in post.taggedUsers" :key="tagUser.id" chips class="text-left ml-3  font-light ">
-                        <span class="border border-gray-400 p-2 rounded-md bg-black text-white ">{{ tagUser }}</span>
-                    </span> -->
                     <tagUserList :taggedUsersList="post.taggedUsers"/>
                 </div>
 
@@ -45,7 +42,7 @@
                     <div class="max-h-20 overflow-auto w-4/5">
                         <div v-for="commentDetails in allcomments[post.id]" :key="commentDetails.id"
                             class="mb-3 bg-white  border-black rounded-lg">
-                          <commentsonPosts :commentDetails="commentDetails"  @editComment="editComment(post.id, commentDetails.id)" @opendelete="openDeleteModal(commentDetails.id, post.id)"/>
+                          <commentsonPosts :commentDetails="commentDetails" :updatedBy="post.updatedBy"  @editComment="editComment(post.id, commentDetails.id)" @opendelete="openDeleteModal(commentDetails.id, post.id)"/>
                         </div>
                     </div>
                     <input v-model="comment[post.id]"
