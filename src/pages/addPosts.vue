@@ -56,6 +56,7 @@ import sucessfullModal from '@/components/sucessfullModal.vue';
 import { onMounted, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import CKEditor from '@ckeditor/ckeditor5-vue';
+import { userStore } from '../store/user-store.js'
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 
 const editor = ref(ClassicEditor);
@@ -67,7 +68,7 @@ const editorConfig = ref({
 const userListLoaded = ref(false);
 const router = useRouter();
 const { postDetails, createPost, isLoading, sucessModal, hasErrors } = createPostApi()
-import { userStore } from '../store/user-store.js'
+
 const { getUsersList } = userStore();
 let userList = [];
 const fetchUsersList = async () => {

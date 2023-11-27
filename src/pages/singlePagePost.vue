@@ -27,16 +27,16 @@
                 <div class=" w-4/5">
                     <div v-for="commentDetails in allcomments" :key="commentDetails.id"
                         class="mb-3 bg-white  border-black rounded-lg">
-                        <commentsonPosts :commentDetails="commentDetails" @editComment="editComment(post.id, commentDetails.id)"  @opendelete="openDeleteModal(commentDetails.id, post.id)"/>
+                        <commentsonPost :commentDetails="commentDetails" @editComment="editComment( commentDetails.id)"  @opendelete="openDeleteModal(commentDetails.id, post.id)"/>
                     </div>
                 </div>
                 <input v-model="comment"
                     class="border break-all border-gray-300 text-gray-800 text-xl p-2 rounded-lg mt-3  block w-4/5  bg-blue-200 "
                     type="text" placeholder="add comments">
                 <v-btn
-                    @click=" (comment.length && editableCommentId.length ? handelupdateComment(comment, post.id) : addCommentsInPost(post.id))"
+                    @click=" (comment && editableCommentId ? handelupdateComment(comment, post.id) : addCommentsInPost(post.id))"
                     class="p-1.5 mt-3" color="blue">
-                    {{ (comment.length && editableCommentId.length ? 'Update comment' : 'Post comment') }}
+                    {{ (comment && editableCommentId ? 'Update comment' : 'Post comment') }}
                 </v-btn>
             </div>
         </div>
@@ -52,7 +52,7 @@
 
 <script setup>
 import { useRoute, useRouter } from 'vue-router';
-import commentsonPosts  from '../components/showAllcomments.vue'
+import commentsonPost  from '../components/showAllcomments.vue'
 import { ref, onMounted } from 'vue';
 import { postStore } from '@/store/post-store';
 import { storeToRefs } from 'pinia';
@@ -78,7 +78,7 @@ onMounted(async () => {
 const comment = ref([])
 const commentsToEdit = ref([])
 const editableCommentId = ref([]);
-const editComment = (postId, commentId) => {
+const editComment = ( commentId) => {
     editableCommentId.value = commentId;
     comment.value = allcomments.value.find(comment => comment.id === commentId).commentTitle;
     commentsToEdit.value = commentId;
