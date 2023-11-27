@@ -32,9 +32,9 @@
                     class="border break-all border-gray-300 text-gray-800 text-xl p-2 rounded-lg mt-3  block w-4/5  bg-blue-200 "
                     type="text" placeholder="add comments">
                 <v-btn
-                    @click=" (comment && editableCommentId ? handelupdateComment(comment, post.id) : addCommentsInPost(post.id))"
+                    @click=" ((comment && editableCommentId.length) ? handelupdateComment(comment, post.id) : addCommentsInPost(post.id))"
                     class="p-1.5 mt-3" color="blue">
-                    {{ (comment && editableCommentId ? 'Update comment' : 'Post comment') }}
+                    {{ ((comment && editableCommentId.length) ? 'Update comment' : 'Post comment') }}
                 </v-btn>
             </div>
         </div>
