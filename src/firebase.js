@@ -2,6 +2,7 @@ import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 import { getStorage } from "firebase/storage";
 import { getAuth, GoogleAuthProvider, FacebookAuthProvider, TwitterAuthProvider } from 'firebase/auth';
+import { getMessaging, getToken, onMessage } from "firebase/messaging";
 
 
 const firebaseConfig = {
@@ -21,3 +22,23 @@ export const auth = getAuth(app);
 export const provider = new GoogleAuthProvider();
 export const facebookProvider = new FacebookAuthProvider();
 export const twitterProvider = new TwitterAuthProvider();
+
+export const messaging = getMessaging(app);
+
+getToken(messaging, { vapidKey: 'BDxzhpRGCiqMl9gexWPXQcHF1XavHbCSf_LffI8RXEoUp1cuHSIMVa_W8A8BxpNXOraECc5jJ6WvzETLwg8cKyE' })
+  .then((currentToken) => {
+    if (currentToken) {
+      console.log('Token:', currentToken);
+    }
+  }).catch((err) => {
+    console.log('An error occurred while retrieving token. ', err);
+  });
+
+onMessage(messaging, (payload) => {
+  console.log('Message received:', payload);
+  const { notification } = payload;
+  self.registration.showNotification(notification.title, {
+    body: notification.body,
+    icon: notification.icon,
+  });
+});

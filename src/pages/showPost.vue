@@ -144,8 +144,22 @@ const addCommentsInPost = async (postId) => {
         addCommentOnPost(comment.value[postId], postId)
         comment.value[postId] = null
         allcomments.value[postId] = await getCommentsForPost(postId);
+        showNotification( `${userDetails.value.firstName}` , 'commented on a post '  );
     }
 }
+const showNotification = (title, body) => {
+    if (Notification.permission === 'granted') {
+        new Notification(title, { body });
+    } else if (Notification.permission !== 'denied') {
+        Notification.requestPermission().then(permission => {
+            if (permission === 'granted') {
+                new Notification(title, { body });
+            }
+        });
+    }
+};
+
+
 const editComment = (postId, commentId) => {
     editableCommentId.value[postId] = commentId;
     comment.value[postId] = allcomments.value[postId].find(comment => comment.id === commentId).commentTitle;
