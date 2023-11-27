@@ -54,6 +54,12 @@ const routes = [
     component: () => import('@/pages/addPosts.vue'),
     beforeEnter: commonBeforeEnter,
   },
+  {
+    path: '/post/:id',
+    name: 'singlepost',
+    component: () => import('@/pages/singlePagePost.vue'),
+    beforeEnter: commonBeforeEnter,
+  },
 ];
 
 const router = createRouter({
