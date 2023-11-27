@@ -25,7 +25,7 @@ export const twitterProvider = new TwitterAuthProvider();
 
 export const messaging = getMessaging(app);
 
-getToken(messaging, { vapidKey: 'BDxzhpRGCiqMl9gexWPXQcHF1XavHbCSf_LffI8RXEoUp1cuHSIMVa_W8A8BxpNXOraECc5jJ6WvzETLwg8cKyE' })
+getToken(messaging, { vapidKey: import.meta.env.VITE_VUE_APP_FIREBASE_VAPID_KEY })
   .then((currentToken) => {
     if (currentToken) {
       console.log('Token:', currentToken);
