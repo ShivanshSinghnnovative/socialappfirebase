@@ -144,7 +144,7 @@ const addCommentsInPost = async (postId) => {
         addCommentOnPost(comment.value[postId], postId)
         comment.value[postId] = null
         allcomments.value[postId] = await getCommentsForPost(postId);
-        showNotification( `${userDetails.value.firstName}` , 'commented on a post '  );
+        showNotification( `${userDetails.value.firstName}` , `commented on a post`);
     }
 }
 const showNotification = (title, body) => {

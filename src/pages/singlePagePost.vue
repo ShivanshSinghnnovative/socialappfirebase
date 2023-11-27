@@ -110,8 +110,20 @@ const addCommentsInPost = async (postId) => {
         addCommentOnPost(comment.value, postId)
         comment.value = null
         allcomments.value = await getCommentsForPost(postId);
+        showNotification( `${userDetails.value.firstName}`   , `commented on ${post.value.firstName} post`);
     }
 }
+const showNotification = (title, body) => {
+    if (Notification.permission === 'granted') {
+        new Notification(title, { body });
+    } else if (Notification.permission !== 'denied') {
+        Notification.requestPermission().then(permission => {
+            if (permission === 'granted') {
+                new Notification(title, { body });
+            }
+        });
+    }
+};
 const goback = () => {
     router.go(-1);
 }
