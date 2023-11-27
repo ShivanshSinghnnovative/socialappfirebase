@@ -5,7 +5,7 @@
                 Go Back
             </v-btn>
         </div>
-        <div v-if="post.title" class=" w-4/6 m-auto bg-gray-300 border border-gray-300 rounded-xl">
+        <div v-if="post.title" class=" w-4/6 m-auto bg-gray-300 border mb-3 border-gray-300 rounded-xl">
             <h2 class=" text-left font-bold p-4 text-xl ml-15 mr-15">{{ post.title }}</h2>
             <div class=" p-4 flex items-center h-10 mt-1 ml-15">
                 <img :src="post.profilePhotoPath" alt="Profile Photo" class=" w-13 h-12 rounded-full mr-4" />
@@ -32,9 +32,9 @@
                     class="border break-all border-gray-300 text-gray-800 text-xl p-2 rounded-lg mt-3  block w-4/5  bg-blue-200 "
                     type="text" placeholder="add comments">
                 <v-btn
-                    @click=" ((comment && editableCommentId.length) ? handelupdateComment(comment, post.id) : addCommentsInPost(post.id))"
+                    @click=" ((comment && editableCommentId && editableCommentId.length) ? handelupdateComment(comment, post.id) : addCommentsInPost(post.id))"
                     class="p-1.5 mt-3" color="blue">
-                    {{ ((comment && editableCommentId.length) ? 'Update comment' : 'Post comment') }}
+                    {{ ((comment && editableCommentId && editableCommentId.length) ? 'Update comment' : 'Post comment') }}
                 </v-btn>
             </div>
         </div>
@@ -76,7 +76,7 @@ onMounted(async () => {
 });
 const comment = ref([])
 const commentsToEdit = ref([])
-const editableCommentId = ref([]);
+const editableCommentId = ref({});
 const editComment = ( commentId) => {
     editableCommentId.value = commentId;
     comment.value = allcomments.value.find(comment => comment.id === commentId).commentTitle;
